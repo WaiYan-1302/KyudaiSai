@@ -8,6 +8,7 @@ A static, GitHub-Pages-ready workspace for the festival publicity team.
 - **IDEA WALL** — fast member submissions with category filtering.
 - **MINDMAP** — draggable nodes; add children, edit, delete, and reorganize ideas.
 - **DECISIONS** — a short log of what was actually decided.
+- **TIMELINE** — a shared, editable publicity schedule with milestone details and status tracking.
 - **ADMIN / EDITOR** — edit site settings, documents, visual blocks, and decisions without manually writing JSON.
 - **SETUP HELPER** — generates `assets/js/config.js` for Firebase sharing and an optional admin PIN.
 - Responsive **Festival Notebook** visual system for phones and desktop.
@@ -83,6 +84,7 @@ After that:
 
 - member ideas are shared
 - the mindmap is shared
+- timeline additions and edits are shared
 - the site still remains a static GitHub Pages site
 
 ### Important security note

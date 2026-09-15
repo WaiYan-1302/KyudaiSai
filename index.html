@@ -27,6 +27,7 @@
           <button data-view="ideas">02 アイデア</button>
           <button data-view="mindmap">03 マインドマップ</button>
           <button data-view="decisions">04 決定事項</button>
+          <button data-view="timeline">05 タイムライン</button>
         </nav>
       </div>
     </header>
@@ -134,7 +135,43 @@
         </div>
         <div class="decisions" id="decisions"></div>
       </section>
+
+      <section class="view" id="view-timeline">
+        <div class="section-head timeline-section-head">
+          <div><h2 id="timelineHeading">タイムライン</h2></div>
+          <p id="timelineDescription">九大祭までの広報タスクを共有。項目を押すと詳細の確認・編集ができます。</p>
+        </div>
+        <div class="timeline-toolbar">
+          <div class="timeline-summary" id="timelineSummary"></div>
+          <button class="btn primary" id="addTimelineBtn" type="button">+ 予定を追加</button>
+        </div>
+        <div class="project-timeline" id="timelineList"></div>
+        <div class="mode-note timeline-mode" id="timelineMode"></div>
+      </section>
     </main>
+  </div>
+
+  <div class="timeline-modal" id="timelineModal" hidden>
+    <div class="timeline-modal-backdrop" data-close-timeline></div>
+    <section class="timeline-modal-card" role="dialog" aria-modal="true" aria-labelledby="timelineModalTitle">
+      <button class="timeline-modal-close" type="button" data-close-timeline aria-label="閉じる">×</button>
+      <div class="doc-eyebrow" id="timelineModalEyebrow">TIMELINE</div>
+      <h2 id="timelineModalTitle">予定の詳細</h2>
+      <form id="timelineForm">
+        <input type="hidden" id="timelineItemId">
+        <div class="timeline-form-grid">
+          <div class="form-row"><label for="timelineDate" id="timelineDateLabel">日付</label><input id="timelineDate" type="date" required></div>
+          <div class="form-row"><label for="timelineDateText" id="timelineDateTextLabel">表示する日付</label><input id="timelineDateText" maxlength="40" placeholder="例：9月後半〜"></div>
+        </div>
+        <div class="form-row"><label for="timelineTitle" id="timelineTitleLabel">タイトル</label><input id="timelineTitle" maxlength="80" required></div>
+        <div class="form-row"><label for="timelineDetails" id="timelineDetailsLabel">詳細</label><textarea id="timelineDetails" maxlength="1200" required></textarea></div>
+        <div class="form-row"><label for="timelineStatus" id="timelineStatusLabel">状態</label><select id="timelineStatus"><option value="planned">予定</option><option value="active">進行中</option><option value="done">完了</option></select></div>
+        <div class="timeline-modal-actions">
+          <button class="btn danger" id="deleteTimelineBtn" type="button">削除</button>
+          <button class="btn primary" id="saveTimelineBtn" type="submit">保存</button>
+        </div>
+      </form>
+    </section>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>

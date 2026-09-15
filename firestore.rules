@@ -16,5 +16,13 @@ service cloud.firestore {
       allow create, update: if request.auth != null;
       allow delete: if false;
     }
+
+    match /rooms/{roomId}/timelines/{timelineId} {
+      allow read: if true;
+      allow create, update: if request.auth != null
+                            && request.resource.data.items is list
+                            && request.resource.data.items.size() <= 100;
+      allow delete: if false;
+    }
   }
 }

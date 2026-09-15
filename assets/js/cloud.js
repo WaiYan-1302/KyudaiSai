@@ -65,4 +65,19 @@ export async function saveMindmap(map) {
   return true;
 }
 
+export async function getTimeline(timelineId = 'main') {
+  if (!ready) return null;
+  const ref = roomDoc('timelines', timelineId);
+  const snap = await firebase.storeMod.getDoc(ref);
+  return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+}
+
+export async function saveTimeline(timeline) {
+  if (!ready) return false;
+  const ref = roomDoc('timelines', timeline.id || 'main');
+  const { id, ...payload } = timeline;
+  await firebase.storeMod.setDoc(ref, payload, { merge: true });
+  return true;
+}
+
 export function cloudEnabled() { return ready; }

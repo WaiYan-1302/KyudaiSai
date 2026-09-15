@@ -1,4 +1,4 @@
-import { initCloud, getIdeas, addIdea, cloudEnabled, getMindmap, saveMindmap } from './cloud.js';
+import { initCloud, getIdeas, addIdea, cloudEnabled, getMindmap, saveMindmap, getTimeline, saveTimeline } from './cloud.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -7,22 +7,28 @@ let data;
 let currentDocId;
 let ideas = [];
 let activeMap = null;
+let activeTimeline = null;
 let saveMapTimer = null;
 let currentLang = 'ja';
 let guideStep = 0;
 let spriteFrame = 0;
 let planGuideStep = 0;
 let planSpriteFrame = 0;
+let timelineModalLastFocus = null;
 
 const UI = {
   ja: {
     pageDescription: '九大祭広報チームの企画ノート', navLabel: 'メインナビゲーション', languageLabel: '表示言語',
-    nav: ['01 企画・資料', '02 アイデア', '03 マインドマップ', '04 決定事項'],
+    nav: ['01 企画・資料', '02 アイデア', '03 マインドマップ', '04 決定事項', '05 タイムライン'],
     countdownKicker: '九大祭まであと', countdownUnit: '日', datePrefix: '開催日：',
     planHeading: '企画・資料', planDescription: '資料を「ファイルの山」ではなく、読みやすいページとして共有する場所。',
     ideasHeading: 'アイデアボード', ideasDescription: '完成していなくて大丈夫。思いついた段階で共有して、みんなで育てよう。',
     mindmapHeading: 'マインドマップ', mindmapDescription: 'カードをドラッグして移動。「子アイデアを追加」で枝を伸ばせます。共有モードなら、全員で同じマップを編集できます。',
     decisionsHeading: '決定事項', decisionsDescription: '会議やLINEで決まったことを短く記録。「結局どうなった？」を防ぐためのページです。',
+    timelineHeading: 'タイムライン', timelineDescription: '九大祭までの広報タスクを共有。項目やマーカーを押すと、詳細の確認・編集ができます。', addTimeline: '+ 予定を追加',
+    timelineStatuses: {planned:'予定',active:'進行中',done:'完了'}, timelineOpenHint: '押して詳細・編集 →', timelineTotal: '全体', timelineEmpty: 'まだ予定がありません。「予定を追加」から始めましょう。',
+    timelineShared: '<strong>共有モード：</strong> タイムラインの編集はFirebaseでチームに保存されます。', timelineLocal: '<strong>ローカル体験モード：</strong> タイムラインの編集はこのブラウザに保存されます。',
+    timelineModalNew: '予定を追加', timelineModalEdit: '予定の詳細・編集', timelineDate: '日付', timelineDateText: '表示する日付', timelineDatePlaceholder: '例：9月後半〜', timelineTitle: 'タイトル', timelineDetails: '詳細', timelineStatus: '状態', timelineSave: '保存', timelineDelete: '削除', timelineClose: '閉じる', timelineDeleteConfirm: 'この予定を削除しますか？', timelineSaved: 'タイムラインを保存しました。', timelineDeleted: '予定を削除しました。', timelineFailed: 'タイムラインを保存できませんでした。',
     titleLabel: 'アイデアのタイトル', titlePlaceholder: '例：練習ミニVlog', categoryLabel: 'カテゴリー', textLabel: 'どんなアイデア？', textPlaceholder: '短くてOK。どんな内容？', authorLabel: '名前 <span style="font-weight:400">（任意）</span>', authorPlaceholder: '匿名', postIdea: 'アイデアを投稿 →',
     filter: '絞り込み', categories: { ALL: 'すべて', INSTAGRAM: 'Instagram', X: 'X', VIDEO: '動画', 'POSTER / FLYER': 'ポスター・チラシ', 'ON CAMPUS': '学内企画', OTHER: 'その他' },
     checkingMode: '共有モードを確認中…', sharedMode: '<strong>共有モード：</strong> アイデアとマインドマップはFirebaseでチームに共有されます。', localMode: '<strong>ローカル体験モード：</strong> 投稿はこのブラウザにのみ保存されます。チームで共有するには <code>assets/js/config.js</code> でFirebaseを有効にしてください。',
@@ -34,8 +40,12 @@ const UI = {
     loadErrorTitle: 'ノートを読み込めませんでした', loadErrorHelp: 'GitHub PagesなどのHTTPサーバーから開いてください。index.htmlを直接開くと、JSONの読み込みがブロックされることがあります。'
   },
   en: {
-    pageDescription: 'Kyudai Festival publicity team planning notebook', navLabel: 'Main navigation', languageLabel: 'Display language', nav: ['01 PLAN / DOCS', '02 IDEAS', '03 MINDMAP', '04 DECISIONS'], countdownKicker: 'FESTIVAL COUNTDOWN', countdownUnit: 'DAYS', datePrefix: 'until ',
+    pageDescription: 'Kyudai Festival publicity team planning notebook', navLabel: 'Main navigation', languageLabel: 'Display language', nav: ['01 PLAN / DOCS', '02 IDEAS', '03 MINDMAP', '04 DECISIONS', '05 TIMELINE'], countdownKicker: 'FESTIVAL COUNTDOWN', countdownUnit: 'DAYS', datePrefix: 'until ',
     planHeading: 'Plan / Docs', planDescription: 'A place to share materials as readable pages, rather than as a pile of files.', ideasHeading: 'Idea Wall', ideasDescription: 'Ideas do not have to be finished. Share a spark now, then help it grow together.', mindmapHeading: 'Mindmap', mindmapDescription: 'Drag cards to move them. Use “+ child idea” to grow a branch. In shared mode, everyone can edit the same map.', decisionsHeading: 'Decisions', decisionsDescription: 'Keep a short record of what was decided in meetings or on LINE, so nobody has to ask, “What did we decide?”',
+    timelineHeading: 'Timeline', timelineDescription: 'Share publicity tasks leading up to Kyudai Festival. Select an item or marker to read its details and edit it.', addTimeline: '+ ADD MILESTONE',
+    timelineStatuses: {planned:'PLANNED',active:'IN PROGRESS',done:'DONE'}, timelineOpenHint: 'OPEN DETAILS / EDIT →', timelineTotal: 'TOTAL', timelineEmpty: 'No milestones yet. Select “Add milestone” to create the first one.',
+    timelineShared: '<strong>Shared mode:</strong> Timeline edits are saved to Firebase for the team.', timelineLocal: '<strong>Local demo mode:</strong> Timeline edits are saved in this browser.',
+    timelineModalNew: 'Add milestone', timelineModalEdit: 'Milestone details / Edit', timelineDate: 'DATE', timelineDateText: 'DISPLAY DATE', timelineDatePlaceholder: 'e.g. Late September', timelineTitle: 'TITLE', timelineDetails: 'DESCRIPTION', timelineStatus: 'STATUS', timelineSave: 'SAVE', timelineDelete: 'DELETE', timelineClose: 'Close', timelineDeleteConfirm: 'Delete this milestone?', timelineSaved: 'Timeline saved.', timelineDeleted: 'Milestone deleted.', timelineFailed: 'Could not save the timeline.',
     titleLabel: 'IDEA TITLE', titlePlaceholder: 'e.g. Rehearsal mini-vlog', categoryLabel: 'CATEGORY', textLabel: "WHAT'S THE IDEA?", textPlaceholder: 'A short description is enough.', authorLabel: 'YOUR NAME <span style="font-weight:400">(optional)</span>', authorPlaceholder: 'anonymous', postIdea: 'POST IDEA →', filter: 'FILTER', categories: { ALL: 'ALL', INSTAGRAM: 'INSTAGRAM', X: 'X', VIDEO: 'VIDEO', 'POSTER / FLYER': 'POSTER / FLYER', 'ON CAMPUS': 'ON CAMPUS', OTHER: 'OTHER' },
     checkingMode: 'Checking sharing mode…', sharedMode: '<strong>Shared mode:</strong> Ideas and mindmaps sync through Firebase.', localMode: '<strong>Local demo mode:</strong> submissions are saved only in this browser. Enable Firebase in <code>assets/js/config.js</code> for team-wide sharing.', noIdeas: 'No ideas in this category yet.', anonymous: 'anonymous', ideaPosted: 'Idea shared with the team.', ideaSaved: 'Idea saved in this browser.', ideaFailed: 'Could not post the idea. Please check the sharing setup.',
     addRoot: '+ Floating idea', resetMap: 'Reset starter map', mapHelp: 'Tip: You can drag cards on a phone too. Deleting a branch also removes all of its child ideas.', resetConfirm: 'Reset the mindmap to the starter version?', newIdeaPrompt: 'New floating idea', childPrompt: 'Child idea', editPrompt: 'Edit text', childAction: '+ child idea', editAction: 'edit', mapSaved: 'Mindmap saved.', mapFailed: 'Mindmap save failed.', noDecisions: 'No decisions yet.', updated: 'UPDATED',
@@ -56,6 +66,7 @@ const EN_CONTENT = {
       blocks:[
         {type:'callout',title:'Before you read',text:'Everything on this page is my personal proposal and current thinking. It has not yet been decided by the publicity team as a whole.\n\nI have referred to handover documents and previous publicity work, but I may have misunderstood something or included ideas that do not match this year’s direction.\n\nIf anything seems incorrect, could be improved, or inspires another idea, please feel free to tell me!'},
         {type:'text',title:'What I want publicity to achieve',body:'My main goal is to make the following clear even to people who do not know HarmoQ yet:\n\n“What kind of group is HarmoQ?”\n“Where can I see them at Kyudai Festival?”\n“When should I go?”\n\nI do not want to increase the number of posts for its own sake. I want our publicity to help interested people actually reach the classroom concerts, street performances, and main stage.\n\nPractical details such as the room number and main-stage time should be especially prominent. Ultimately, I hope to create this journey:\n\nDiscover HarmoQ → become interested → find the place and time → come and watch.'},
+        {type:'callout',title:'Who we especially want to reach',text:'Of course, many friends, family members, and acquaintances of the performers will come to Kyudai Festival, and they are an important audience for HarmoQ.\n\nAt the same time, one of my main goals in publicity is to make people with no direct connection to a HarmoQ member think, “I’d like to go and see that.”\n\nI want people to come not only because a friend invited them or someone they know is performing, but also because they happened to discover us on social media, were looking for something interesting at Kyudai Festival, or were already curious about a cappella.\n\nTo make that possible, even someone seeing HarmoQ for the first time should immediately understand what kind of group we are, where they can see us, and when we are performing.'},
         {type:'quote',text:'Publicity should go beyond awareness and help people feel that they can actually come and see us.'},
         {type:'split',left:{title:'Build awareness',text:'First, let people know about HarmoQ and that we will perform at Kyudai Festival.\n\n• Previous performance videos\n• Short performance clips\n• An introduction to HarmoQ\n• What makes a cappella special\n• Kyudai Festival appearance announcements'},right:{title:'Help people attend',text:'Give interested people everything they need to arrive without confusion.\n\n• Room number\n• Classroom concert times\n• Street performance place and time\n• Main-stage appearance time\n• Timetable\n• Directions'}},
         {type:'cards',title:'Content direction',items:[
@@ -97,6 +108,15 @@ const EN_CONTENT = {
   ],
   decisions: [{date:'2026-09-15',title:'Use Festival Notebook as the publicity team’s shared workspace',detail:'Start with four sections: Plan / Docs, Ideas, Mindmap, and Decisions.'}],
   starterIdeas: {'starter-1':{title:'Rehearsal mini-vlogs',text:'Share 15–25 second vertical clips from rehearsals. Show the atmosphere of preparation, not only the finished performance.',author:'sample'},'starter-2':{title:'One reason to watch each band',text:'Go beyond a biography and add one memorable detail that gives people a reason to see the band.',author:'sample'}},
+  timelineItems: {
+    'phase-awareness':{dateLabel:'From Sep. 20',title:'Phase 1: Awareness',description:'Use existing performance videos and photos to introduce HarmoQ and announce our Kyudai Festival appearance.'},
+    'phase-interest':{dateLabel:'Late September',title:'Phase 2: Interest',description:'Share short performance clips and introductions to HarmoQ and a cappella so viewers think, “I’d like to see that.”'},
+    'phase-information':{dateLabel:'Early October',title:'Phase 3: Practical details',description:'Release the places and times for the classroom concerts, street performances, and main stage in stages.'},
+    'schedule-release':{dateLabel:'After schedule confirmation',title:'Schedule: Timetable',description:'Publish the detailed timetable for the classroom concerts and street performances.'},
+    'reminder':{dateLabel:'1–2 weeks before',title:'Reminder: Place and time',description:'Prominently repeat the room number, location, and performance times in a clear format.'},
+    'final-push':{dateLabel:'Just before the festival',title:'Final Push',description:'Summarize when and where people can see HarmoQ in a format that first-time viewers can understand at a glance.'},
+    'festival-day':{dateLabel:'Festival day',title:'Live Updates',description:'Use Stories and similar posts to share locations, times, and live updates throughout the day.'}
+  },
   mapNodes: {
     root:{ja:'HarmoQへ会いに行く理由を届ける',en:'Deliver a reason to visit HarmoQ',aliases:['九大祭に来たくなる理由','A reason to visit Kyudai Festival']},
     n1:{ja:'出演者の魅力',en:'People'}, n2:{ja:'パフォーマンス',en:'Performance'},
@@ -140,12 +160,15 @@ function setLanguage(lang) {
   currentLang=lang==='en'?'en':'ja'; document.documentElement.lang=currentLang; $('meta[name="description"]').content=t().pageDescription; $('.nav').setAttribute('aria-label',t().navLabel); $('.language-toggle').setAttribute('aria-label',t().languageLabel);
   $$('.language-toggle button').forEach(button=>{const active=button.dataset.lang===currentLang;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
   $$('.nav button').forEach((button,index)=>{button.textContent=t().nav[index];});
-  const textValues={planHeading:'planHeading',ideasHeading:'ideasHeading',ideasDescription:'ideasDescription',mindmapHeading:'mindmapHeading',mindmapDescription:'mindmapDescription',decisionsHeading:'decisionsHeading',decisionsDescription:'decisionsDescription',ideaTitleLabel:'titleLabel',ideaCategoryLabel:'categoryLabel',ideaTextLabel:'textLabel',postIdeaBtn:'postIdea',ideaFilterLabel:'filter',addRootBtn:'addRoot',resetMapBtn:'resetMap',mapHelp:'mapHelp'};
+  const textValues={planHeading:'planHeading',ideasHeading:'ideasHeading',ideasDescription:'ideasDescription',mindmapHeading:'mindmapHeading',mindmapDescription:'mindmapDescription',decisionsHeading:'decisionsHeading',decisionsDescription:'decisionsDescription',timelineHeading:'timelineHeading',timelineDescription:'timelineDescription',addTimelineBtn:'addTimeline',ideaTitleLabel:'titleLabel',ideaCategoryLabel:'categoryLabel',ideaTextLabel:'textLabel',postIdeaBtn:'postIdea',ideaFilterLabel:'filter',addRootBtn:'addRoot',resetMapBtn:'resetMap',mapHelp:'mapHelp',timelineDateLabel:'timelineDate',timelineDateTextLabel:'timelineDateText',timelineTitleLabel:'timelineTitle',timelineDetailsLabel:'timelineDetails',timelineStatusLabel:'timelineStatus',saveTimelineBtn:'timelineSave',deleteTimelineBtn:'timelineDelete'};
   Object.entries(textValues).forEach(([id,key])=>{$(`#${id}`).textContent=t()[key];});
   $('#view-plan .section-head p').textContent=t().planDescription; $('#ideaTitle').placeholder=t().titlePlaceholder; $('#ideaText').placeholder=t().textPlaceholder; $('#ideaAuthorLabel').innerHTML=t().authorLabel; $('#ideaAuthor').placeholder=t().authorPlaceholder;
   ['ideaCategory','ideaFilter'].forEach(id=>$(`#${id}`).querySelectorAll('option').forEach(option=>{option.textContent=t().categories[option.value];}));
+  $('#timelineDateText').placeholder=t().timelineDatePlaceholder;
+  $('#timelineStatus').querySelectorAll('option').forEach(option=>{option.textContent=t().timelineStatuses[option.value];});
+  $('.timeline-modal-close').setAttribute('aria-label',t().timelineClose);
   setTheme(); renderGuide(); renderPlanGuide();
-  if(data){renderDocList();renderIdeas();renderDecisions();renderMindmap();updateSyncMode();}
+  if(data){renderDocList();renderIdeas();renderDecisions();renderMindmap();renderTimeline();updateSyncMode();updateTimelineMode();}
 }
 
 function initGuide() {
@@ -199,6 +222,50 @@ function renderIdeas(){const category=$('#ideaFilter')?.value||'ALL';const list=
 function bindIdeaForm(){$('#ideaFilter').addEventListener('change',renderIdeas);$('#ideaForm').addEventListener('submit',async event=>{event.preventDefault();const form=new FormData(event.currentTarget);const idea={title:String(form.get('title')||'').trim(),category:String(form.get('category')||'OTHER'),text:String(form.get('text')||'').trim(),author:String(form.get('author')||'').trim(),createdAt:new Date().toISOString()};if(!idea.title||!idea.text)return;try{if(cloudEnabled()){ideas.push(await addIdea(idea));toast(t().ideaPosted);}else{idea.id=crypto.randomUUID();const local=loadLocalIdeas();local.push(idea);saveLocalIdeas(local);ideas.push(idea);toast(t().ideaSaved);}event.currentTarget.reset();renderIdeas();}catch(error){console.error(error);toast(t().ideaFailed);}});}
 function renderDecisions(){const decisions=localizedDecisions()||[];$('#decisions').innerHTML=decisions.length?decisions.map(item=>`<article class="decision"><div class="date">${html(item.date)}</div><div><h3>${html(item.title)}</h3><p>${html(item.detail||'')}</p></div></article>`).join(''):`<div class="empty">${t().noDecisions}</div>`;}
 
+function localTimelineKey(){return'festivalNotebookTimelineV1';}
+function loadLocalTimeline(){try{return JSON.parse(localStorage.getItem(localTimelineKey())||'null');}catch{return null;}}
+function saveLocalTimeline(timeline){localStorage.setItem(localTimelineKey(),JSON.stringify(timeline));}
+function localizedTimelineItem(item){const translation=EN_CONTENT.timelineItems[item.id];return currentLang==='en'&&translation&&!item.customized?{...item,...translation}:item;}
+function updateTimelineMode(){if($('#timelineMode'))$('#timelineMode').innerHTML=cloudEnabled()?t().timelineShared:t().timelineLocal;}
+
+async function initTimeline(){
+  if(cloudEnabled()){
+    const cloudTimeline=await getTimeline('main');
+    activeTimeline=cloudTimeline||structuredClone(data.timeline||{id:'main',items:[]});
+    if(!cloudTimeline)await saveTimeline(activeTimeline);
+  }else activeTimeline=loadLocalTimeline()||structuredClone(data.timeline||{id:'main',items:[]});
+  if(!Array.isArray(activeTimeline.items))activeTimeline.items=[];
+  renderTimeline();updateTimelineMode();
+}
+
+function formatTimelineDate(value){if(!value)return'';const date=new Date(`${value}T00:00:00`);return Number.isNaN(date.getTime())?value:new Intl.DateTimeFormat(currentLang==='ja'?'ja-JP':'en-US',{month:'short',day:'numeric',year:'numeric'}).format(date);}
+function renderTimeline(){
+  if(!activeTimeline)return;
+  const items=(activeTimeline.items||[]).slice().sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  const counts={planned:0,active:0,done:0};items.forEach(item=>{counts[item.status]=(counts[item.status]||0)+1;});
+  $('#timelineSummary').innerHTML=`<span><i></i>${t().timelineTotal} ${items.length}</span>${['planned','active','done'].map(status=>`<span class="${status}"><i></i>${t().timelineStatuses[status]} ${counts[status]||0}</span>`).join('')}`;
+  $('#timelineList').innerHTML=items.length?items.map(raw=>{const item=localizedTimelineItem(raw);const description=String(item.description||'').replaceAll('\n',' ');const preview=description.length>145?`${description.slice(0,145)}…`:description;const status=['planned','active','done'].includes(item.status)?item.status:'planned';const dateLabel=item.dateLabel||formatTimelineDate(item.date);return`<article class="timeline-row status-${status}"><div class="timeline-date"><strong>${html(dateLabel)}</strong><span>${html(formatTimelineDate(item.date))}</span></div><button class="timeline-marker" type="button" data-timeline-open="${html(item.id)}" aria-label="${html(item.title)}"></button><button class="timeline-card" type="button" data-timeline-open="${html(item.id)}"><div class="timeline-card-head"><h3>${html(item.title)}</h3><span class="timeline-status">${t().timelineStatuses[status]}</span></div><p>${html(preview)}</p><span class="timeline-open-hint">${t().timelineOpenHint}</span></button></article>`;}).join(''):`<div class="empty">${t().timelineEmpty}</div>`;
+  $$('[data-timeline-open]').forEach(button=>button.addEventListener('click',()=>openTimelineModal(button.dataset.timelineOpen)));
+}
+
+function openTimelineModal(id=''){
+  const raw=(activeTimeline?.items||[]).find(item=>item.id===id);
+  const item=raw?localizedTimelineItem(raw):{id:'',date:'',dateLabel:'',title:'',description:'',status:'planned'};
+  timelineModalLastFocus=document.activeElement;
+  $('#timelineItemId').value=item.id;$('#timelineDate').value=item.date||'';$('#timelineDateText').value=item.dateLabel||'';$('#timelineTitle').value=item.title||'';$('#timelineDetails').value=item.description||'';$('#timelineStatus').value=item.status||'planned';
+  $('#timelineModalTitle').textContent=raw?t().timelineModalEdit:t().timelineModalNew;$('#deleteTimelineBtn').hidden=!raw;$('#timelineModal').hidden=false;document.body.classList.add('modal-open');
+  setTimeout(()=>$('#timelineTitle').focus(),0);
+}
+function closeTimelineModal(){if($('#timelineModal').hidden)return;$('#timelineModal').hidden=true;document.body.classList.remove('modal-open');timelineModalLastFocus?.focus?.();}
+async function persistTimeline(message){try{if(cloudEnabled())await saveTimeline(activeTimeline);else saveLocalTimeline(activeTimeline);renderTimeline();toast(message||t().timelineSaved);return true;}catch(error){console.error(error);toast(t().timelineFailed);return false;}}
+function bindTimelineControls(){
+  $('#addTimelineBtn').addEventListener('click',()=>openTimelineModal());
+  $$('[data-close-timeline]').forEach(element=>element.addEventListener('click',closeTimelineModal));
+  $('#timelineForm').addEventListener('submit',async event=>{event.preventDefault();const id=$('#timelineItemId').value||crypto.randomUUID();const item={id,date:$('#timelineDate').value,dateLabel:$('#timelineDateText').value.trim(),title:$('#timelineTitle').value.trim(),description:$('#timelineDetails').value.trim(),status:$('#timelineStatus').value,customized:true,updatedAt:new Date().toISOString()};if(!item.date||!item.title||!item.description)return;const index=activeTimeline.items.findIndex(existing=>existing.id===id);if(index>=0)activeTimeline.items[index]=item;else activeTimeline.items.push(item);if(await persistTimeline(t().timelineSaved))closeTimelineModal();});
+  $('#deleteTimelineBtn').addEventListener('click',async()=>{const id=$('#timelineItemId').value;if(!id||!confirm(t().timelineDeleteConfirm))return;activeTimeline.items=activeTimeline.items.filter(item=>item.id!==id);if(await persistTimeline(t().timelineDeleted))closeTimelineModal();});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('#timelineModal').hidden)closeTimelineModal();});
+}
+
 function localMapKey(){return'festivalNotebookMindmapV1';}
 function loadLocalMindmap(){try{return JSON.parse(localStorage.getItem(localMapKey())||'null');}catch{return null;}}
 function saveLocalMindmap(map){localStorage.setItem(localMapKey(),JSON.stringify(map));}
@@ -210,5 +277,5 @@ function collectDescendants(id){const output=[];const walk=parent=>activeMap.nod
 function drawLines(){if(!activeMap)return;const svg=$('#mindmapLines'),wrap=$('#mindmapCanvas'),wrapRect=wrap.getBoundingClientRect();svg.innerHTML='';activeMap.nodes.filter(node=>node.parentId).forEach(node=>{const child=$(`.map-node[data-id="${CSS.escape(node.id)}"]`,wrap),parent=$(`.map-node[data-id="${CSS.escape(node.parentId)}"]`,wrap);if(!child||!parent)return;const a=parent.getBoundingClientRect(),b=child.getBoundingClientRect(),x1=a.left-wrapRect.left+a.width/2,y1=a.top-wrapRect.top+a.height/2,x2=b.left-wrapRect.left+b.width/2,y2=b.top-wrapRect.top+b.height/2,dx=Math.max(40,Math.abs(x2-x1)*.45),direction=x2>=x1?1:-1,path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d',`M ${x1} ${y1} C ${x1+dx*direction} ${y1}, ${x2-dx*direction} ${y2}, ${x2} ${y2}`);path.setAttribute('fill','none');path.setAttribute('stroke','#716c63');path.setAttribute('stroke-width','2');path.setAttribute('stroke-dasharray','5 5');svg.appendChild(path);});}
 function makeDraggable(element,node){let start=null;element.addEventListener('pointerdown',event=>{if(event.target.closest('button'))return;start={px:event.clientX,py:event.clientY,x:node.x,y:node.y};element.setPointerCapture(event.pointerId);});element.addEventListener('pointermove',event=>{if(!start)return;node.x=Math.max(0,start.x+event.clientX-start.px);node.y=Math.max(0,start.y+event.clientY-start.py);element.style.left=`${node.x}px`;element.style.top=`${node.y}px`;drawLines();});element.addEventListener('pointerup',()=>{if(start)scheduleMapSave();start=null;});element.addEventListener('pointercancel',()=>{start=null;});}
 
-async function main(){try{data=await loadData();initLanguageToggle();initTabs();initGuide();initPlanGuide();bindMindmapToolbar();setLanguage('ja');$('#syncMode').innerHTML=t().checkingMode;await initIdeas();renderMindmap();window.addEventListener('resize',drawLines);}catch(error){console.error(error);document.body.innerHTML=`<div class="lock-screen"><h1>${t().loadErrorTitle}</h1><p>${html(error.message)}</p><p>${t().loadErrorHelp}</p></div>`;}}
+async function main(){try{data=await loadData();initLanguageToggle();initTabs();initGuide();initPlanGuide();bindMindmapToolbar();bindTimelineControls();setLanguage('ja');$('#syncMode').innerHTML=t().checkingMode;await initIdeas();await initTimeline();renderMindmap();window.addEventListener('resize',drawLines);}catch(error){console.error(error);document.body.innerHTML=`<div class="lock-screen"><h1>${t().loadErrorTitle}</h1><p>${html(error.message)}</p><p>${t().loadErrorHelp}</p></div>`;}}
 main();
