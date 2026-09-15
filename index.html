@@ -4,23 +4,29 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#f5f0e6">
-  <meta name="description" content="Kyudai Sai publicity planning notebook">
+  <meta name="description" content="九大祭広報チームの企画ノート">
   <link rel="stylesheet" href="./assets/css/style.css">
-  <title>Festival Notebook</title>
+  <title>九大祭 広報ノート</title>
 </head>
 <body>
   <div class="shell">
     <header class="site-header">
       <div class="header-inner">
         <div class="topline">
-          <div class="brand"><span id="brandTitle">KYUDAI SAI / KOHO</span><small id="brandSubtitle">Festival Notebook</small></div>
-          <div class="phase-stamp" id="phaseStamp">IDEAS → PLANNING</div>
+          <div class="brand"><span id="brandTitle">KYUDAI SAI / KOHO</span><small id="brandSubtitle">九大祭 広報ノート</small></div>
+          <div class="header-actions">
+            <div class="phase-stamp" id="phaseStamp">アイデア → 企画</div>
+            <div class="language-toggle" role="group" aria-label="表示言語">
+              <button class="active" type="button" data-lang="ja" aria-pressed="true">日本語</button>
+              <button type="button" data-lang="en" aria-pressed="false">EN</button>
+            </div>
+          </div>
         </div>
-        <nav class="nav" aria-label="Main navigation">
-          <button class="active" data-view="plan">01 PLAN</button>
-          <button data-view="ideas">02 IDEAS</button>
-          <button data-view="mindmap">03 MINDMAP</button>
-          <button data-view="decisions">04 DECISIONS</button>
+        <nav class="nav" aria-label="メインナビゲーション">
+          <button class="active" data-view="plan">01 企画・資料</button>
+          <button data-view="ideas">02 アイデア</button>
+          <button data-view="mindmap">03 マインドマップ</button>
+          <button data-view="decisions">04 決定事項</button>
         </nav>
       </div>
     </header>
@@ -36,7 +42,7 @@
     <main class="main">
       <section class="view active" id="view-plan">
         <div class="section-head">
-          <div><h2>Plan / Docs</h2></div>
+          <div><h2 id="planHeading">企画・資料</h2></div>
           <p>資料を「ファイルの山」ではなく、読みやすいページとして共有する場所。</p>
         </div>
         <div class="paper-layout">
@@ -47,26 +53,41 @@
 
       <section class="view" id="view-ideas">
         <div class="section-head">
-          <div><h2>Idea Wall</h2></div>
-          <p>完成していなくてOK。思いつきの段階で投げて、後から育てる。</p>
+          <div><h2 id="ideasHeading">アイデアボード</h2></div>
+          <p id="ideasDescription">完成していなくて大丈夫。思いついた段階で共有して、みんなで育てよう。</p>
         </div>
+        <section class="idea-guide" id="ideaGuide" aria-labelledby="ideaGuideTitle">
+          <button class="idea-guide-close" id="ideaGuideClose" type="button" aria-label="ガイドを隠す">×</button>
+          <div class="idea-guide-character" aria-hidden="true">
+            <img id="ideaGuideSprite" src="./assets/dialogueAni1/harmoq_cat_01.png" alt="">
+          </div>
+          <div class="idea-guide-dialogue">
+            <div class="idea-guide-kicker" id="ideaGuideTitle">HARMOQ GUIDE</div>
+            <p id="ideaGuideText"></p>
+            <div class="idea-guide-controls">
+              <span id="ideaGuideProgress" aria-live="polite"></span>
+              <button class="btn small" id="ideaGuideNext" type="button">次へ →</button>
+            </div>
+          </div>
+        </section>
+        <button class="idea-guide-show" id="ideaGuideShow" type="button" hidden>💡 使い方ガイドを表示</button>
         <div class="idea-layout">
           <aside class="idea-form-card">
             <form id="ideaForm">
-              <div class="form-row"><label for="ideaTitle">IDEA TITLE</label><input id="ideaTitle" name="title" maxlength="80" required placeholder="例：練習ミニVlog"></div>
-              <div class="form-row"><label for="ideaCategory">CATEGORY</label><select id="ideaCategory" name="category"><option>INSTAGRAM</option><option>X</option><option>VIDEO</option><option>POSTER / FLYER</option><option>ON CAMPUS</option><option>OTHER</option></select></div>
-              <div class="form-row"><label for="ideaText">WHAT'S THE IDEA?</label><textarea id="ideaText" name="text" maxlength="600" required placeholder="短くてOK。どういうもの？"></textarea></div>
-              <div class="form-row"><label for="ideaAuthor">YOUR NAME <span style="font-weight:400">(optional)</span></label><input id="ideaAuthor" name="author" maxlength="40" placeholder="anonymous"></div>
-              <button class="btn primary" type="submit">POST IDEA →</button>
+              <div class="form-row"><label for="ideaTitle" id="ideaTitleLabel">アイデアのタイトル</label><input id="ideaTitle" name="title" maxlength="80" required placeholder="例：練習ミニVlog"></div>
+              <div class="form-row"><label for="ideaCategory" id="ideaCategoryLabel">カテゴリー</label><select id="ideaCategory" name="category"><option value="INSTAGRAM">Instagram</option><option value="X">X</option><option value="VIDEO">動画</option><option value="POSTER / FLYER">ポスター・チラシ</option><option value="ON CAMPUS">学内企画</option><option value="OTHER">その他</option></select></div>
+              <div class="form-row"><label for="ideaText" id="ideaTextLabel">どんなアイデア？</label><textarea id="ideaText" name="text" maxlength="600" required placeholder="短くてOK。どんな内容？"></textarea></div>
+              <div class="form-row"><label for="ideaAuthor" id="ideaAuthorLabel">名前 <span style="font-weight:400">（任意）</span></label><input id="ideaAuthor" name="author" maxlength="40" placeholder="匿名"></div>
+              <button class="btn primary" id="postIdeaBtn" type="submit">アイデアを投稿 →</button>
             </form>
-            <div class="mode-note" id="syncMode">Checking sharing mode…</div>
+            <div class="mode-note" id="syncMode">共有モードを確認中…</div>
           </aside>
           <div>
             <div class="toolbar idea-filter">
-              <label for="ideaFilter"><strong>FILTER</strong></label>
+              <label for="ideaFilter"><strong id="ideaFilterLabel">絞り込み</strong></label>
               <select id="ideaFilter" class="btn ghost">
-                <option value="ALL">ALL</option>
-                <option>INSTAGRAM</option><option>X</option><option>VIDEO</option><option>POSTER / FLYER</option><option>ON CAMPUS</option><option>OTHER</option>
+                <option value="ALL">すべて</option>
+                <option value="INSTAGRAM">Instagram</option><option value="X">X</option><option value="VIDEO">動画</option><option value="POSTER / FLYER">ポスター・チラシ</option><option value="ON CAMPUS">学内企画</option><option value="OTHER">その他</option>
               </select>
             </div>
             <div class="idea-grid" id="ideaGrid"></div>
@@ -76,25 +97,25 @@
 
       <section class="view" id="view-mindmap">
         <div class="section-head">
-          <div><h2>Mindmap</h2></div>
-          <p>カードをドラッグ。<strong>+ child</strong> で枝を伸ばす。Shared mode なら全員で同じマップを編集できます。</p>
+          <div><h2 id="mindmapHeading">マインドマップ</h2></div>
+          <p id="mindmapDescription">カードをドラッグして移動。「子アイデアを追加」で枝を伸ばせます。共有モードなら、全員で同じマップを編集できます。</p>
         </div>
         <div class="map-wrap">
           <div class="map-toolbar">
-            <button class="btn small" id="addRootBtn">+ Floating idea</button>
-            <button class="btn small ghost" id="resetMapBtn">Reset starter map</button>
+            <button class="btn small" id="addRootBtn">+ 単独アイデア</button>
+            <button class="btn small ghost" id="resetMapBtn">初期状態に戻す</button>
           </div>
           <div id="mindmapCanvas">
             <svg id="mindmapLines" aria-hidden="true"></svg>
           </div>
-          <div class="map-help">Tip: スマホでもカードをドラッグできます。枝を削除すると、その下の子ノードもまとめて消えます。</div>
+          <div class="map-help" id="mapHelp">ヒント：スマホでもカードをドラッグできます。枝を削除すると、その下の子アイデアもまとめて削除されます。</div>
         </div>
       </section>
 
       <section class="view" id="view-decisions">
         <div class="section-head">
-          <div><h2>Decisions</h2></div>
-          <p>会議やLINEで決まったことだけを短く残す。「結局どうなった？」を防ぐページ。</p>
+          <div><h2 id="decisionsHeading">決定事項</h2></div>
+          <p id="decisionsDescription">会議やLINEで決まったことを短く記録。「結局どうなった？」を防ぐためのページです。</p>
         </div>
         <div class="decisions" id="decisions"></div>
       </section>

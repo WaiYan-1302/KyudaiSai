@@ -1,18 +1,18 @@
 {
   "site": {
     "title": "KYUDAI SAI / KOHO",
-    "subtitle": "Festival Notebook",
+    "subtitle": "九大祭 広報ノート",
     "tagline": "九大祭に来たくなる理由をつくる。",
-    "phase": "IDEAS → PLANNING",
-    "festivalDate": "2026-11-01",
+    "phase": "アイデア → 企画",
+    "festivalDate": "2026-10-31",
     "accent": "#F0642B",
     "repoUrl": ""
   },
   "documents": [
     {
       "id": "start-here",
-      "title": "Start Here",
-      "eyebrow": "00 / GUIDE",
+      "title": "はじめに",
+      "eyebrow": "00 / ガイド",
       "summary": "このサイトは、広報の考え・決定・資料を一か所にまとめるための共同ノートです。",
       "updated": "2026-09-15",
       "tags": ["guide", "team"],
@@ -20,21 +20,21 @@
         {
           "type": "callout",
           "tone": "marker",
-          "title": "Core idea",
+          "title": "大切にしたいこと",
           "text": "九大祭に来たくなる理由をつくる。"
         },
         {
           "type": "text",
-          "title": "How to use this space",
-          "body": "Plan では現在の考えや資料を読む。Ideas では思いつきを気軽に共有する。Mindmap ではアイデア同士をつなげる。Decisions では『結局どうなった？』を残す。"
+          "title": "この場所の使い方",
+          "body": "「企画・資料」で今の考えや資料を読み、「アイデア」で思いつきを気軽に共有します。「マインドマップ」でアイデア同士をつなげ、「決定事項」に話し合いの結論を残します。"
         },
         {
           "type": "cards",
           "items": [
-            {"title": "PLAN", "text": "考え・方針・資料を読みやすく整理"},
-            {"title": "IDEAS", "text": "30秒で投げられるアイデア箱"},
-            {"title": "MINDMAP", "text": "企画を枝分かれさせながら考える"},
-            {"title": "DECISIONS", "text": "決まったことだけを短く記録"}
+            {"title": "企画・資料", "text": "考え・方針・資料を読みやすく整理"},
+            {"title": "アイデア", "text": "30秒で投稿できるアイデア箱"},
+            {"title": "マインドマップ", "text": "企画を枝分かれさせながら考える"},
+            {"title": "決定事項", "text": "決まったことだけを短く記録"}
           ]
         }
       ]
@@ -42,14 +42,14 @@
     {
       "id": "koho-plan",
       "title": "広報の現在地",
-      "eyebrow": "01 / CURRENT DIRECTION",
+      "eyebrow": "01 / 現在の方針",
       "summary": "まだ完成した戦略ではなく、今の仮説を共有するためのページ。",
       "updated": "2026-09-15",
       "tags": ["plan", "koho"],
       "blocks": [
         {
           "type": "text",
-          "title": "What we're trying to achieve",
+          "title": "目指していること",
           "body": "HarmoQ をまだ知らない人にも、九大祭で『ちょっと見てみたい』と思ってもらう。投稿数を増やすことより、来場の理由を作ることを優先する。"
         },
         {
@@ -59,7 +59,7 @@
         },
         {
           "type": "checklist",
-          "title": "Open questions",
+          "title": "これから考えること",
           "items": [
             {"text": "バンド紹介をどんなフォーマットにする？", "done": false},
             {"text": "英語をどの程度併記する？", "done": false},
@@ -69,12 +69,12 @@
         },
         {
           "type": "timeline",
-          "title": "Simple working rhythm",
+          "title": "進め方の基本",
           "items": [
-            {"date": "NOW", "title": "Collect", "text": "アイデアを集める"},
-            {"date": "NEXT", "title": "Choose", "text": "やる企画を絞る"},
-            {"date": "THEN", "title": "Make", "text": "素材・文章・投稿を作る"},
-            {"date": "FESTIVAL", "title": "Show up", "text": "当日まで継続して発信"}
+            {"date": "いま", "title": "集める", "text": "アイデアを集める"},
+            {"date": "つぎ", "title": "選ぶ", "text": "実行する企画を絞る"},
+            {"date": "その後", "title": "つくる", "text": "素材・文章・投稿を作る"},
+            {"date": "九大祭", "title": "届ける", "text": "当日まで継続して発信する"}
           ]
         }
       ]
@@ -90,31 +90,31 @@
   "starterIdeas": [
     {
       "id": "starter-1",
-      "title": "Rehearsal mini-vlogs",
+      "title": "練習ミニVlog",
       "category": "VIDEO",
       "text": "練習の短い断片を15〜25秒の縦動画で出す。完成品だけでなく準備中の空気を見せる。",
-      "author": "sample",
+      "author": "サンプル",
       "createdAt": "2026-09-15T00:00:00.000Z"
     },
     {
       "id": "starter-2",
-      "title": "One fact about each band",
+      "title": "各バンドの推しポイントを一つ",
       "category": "INSTAGRAM",
       "text": "バンド紹介を経歴だけにせず、『このバンドを見る理由』になる一言を添える。",
-      "author": "sample",
+      "author": "サンプル",
       "createdAt": "2026-09-15T00:00:00.000Z"
     }
   ],
   "mindmaps": [
     {
       "id": "main",
-      "title": "九大祭 広報 ideas",
+      "title": "九大祭 広報アイデア",
       "nodes": [
         {"id": "root", "parentId": null, "text": "九大祭に来たくなる理由", "x": 470, "y": 260},
-        {"id": "n1", "parentId": "root", "text": "People", "x": 170, "y": 120},
-        {"id": "n2", "parentId": "root", "text": "Performance", "x": 170, "y": 400},
-        {"id": "n3", "parentId": "root", "text": "Festival mood", "x": 760, "y": 120},
-        {"id": "n4", "parentId": "root", "text": "Useful info", "x": 760, "y": 400}
+        {"id": "n1", "parentId": "root", "text": "出演者の魅力", "x": 170, "y": 120},
+        {"id": "n2", "parentId": "root", "text": "パフォーマンス", "x": 170, "y": 400},
+        {"id": "n3", "parentId": "root", "text": "九大祭の雰囲気", "x": 760, "y": 120},
+        {"id": "n4", "parentId": "root", "text": "役立つ情報", "x": 760, "y": 400}
       ]
     }
   ]

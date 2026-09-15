@@ -73,6 +73,28 @@ a { color: inherit; }
   letter-spacing: .08em;
   background: var(--yellow);
 }
+.header-actions { display:flex; align-items:center; justify-content:flex-end; gap:12px; }
+.language-toggle {
+  display:flex;
+  padding:3px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:var(--paper-2);
+  box-shadow:2px 2px 0 rgba(23,23,22,.08);
+}
+.language-toggle button {
+  min-width:46px;
+  border:0;
+  border-radius:999px;
+  background:transparent;
+  padding:5px 9px;
+  color:var(--muted);
+  cursor:pointer;
+  font-size:.72rem;
+  font-weight:900;
+}
+.language-toggle button.active { background:var(--ink); color:white; }
+.language-toggle button:focus-visible { outline:3px solid var(--accent-soft); outline-offset:2px; }
 .nav {
   display: flex;
   gap: 6px;
@@ -225,6 +247,81 @@ a { color: inherit; }
 .btn.ghost { border-color:var(--line); box-shadow:none; }
 .btn.small { padding:6px 9px; font-size:.82rem; }
 
+.idea-guide {
+  position:relative;
+  display:grid;
+  grid-template-columns:150px minmax(0,1fr);
+  align-items:end;
+  min-height:176px;
+  margin:0 0 24px;
+  border:2px solid var(--ink);
+  background:linear-gradient(112deg, var(--accent-soft), #fff4a5 72%);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.idea-guide[hidden], .idea-guide-show[hidden] { display:none; }
+.idea-guide-character {
+  height:174px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  overflow:hidden;
+}
+.idea-guide-character img {
+  width:142px;
+  height:auto;
+  display:block;
+  image-rendering:pixelated;
+  transform:translateY(8px);
+}
+.idea-guide-dialogue {
+  position:relative;
+  align-self:center;
+  margin:22px 58px 22px 8px;
+  padding:18px 20px 14px;
+  border:2px solid var(--ink);
+  background:rgba(255,250,240,.96);
+  box-shadow:3px 4px 0 rgba(23,23,22,.14);
+}
+.idea-guide-dialogue::before {
+  content:"";
+  position:absolute;
+  left:-13px;
+  bottom:28px;
+  width:20px;
+  height:20px;
+  border-left:2px solid var(--ink);
+  border-bottom:2px solid var(--ink);
+  background:var(--paper-2);
+  transform:rotate(45deg);
+}
+.idea-guide-kicker { color:var(--accent); font-size:.7rem; font-weight:950; letter-spacing:.14em; }
+.idea-guide-dialogue p { min-height:3em; margin:7px 0 12px; font-weight:800; line-height:1.55; }
+.idea-guide-controls { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.idea-guide-controls span { color:var(--muted); font-size:.74rem; font-weight:800; }
+.idea-guide-close {
+  position:absolute;
+  z-index:2;
+  top:9px;
+  right:10px;
+  width:32px;
+  height:32px;
+  border:1px solid rgba(23,23,22,.35);
+  border-radius:50%;
+  background:rgba(255,250,240,.76);
+  cursor:pointer;
+  font-size:1.25rem;
+  line-height:1;
+}
+.idea-guide-show {
+  margin:0 0 20px;
+  border:1px dashed var(--ink);
+  background:var(--paper-2);
+  padding:8px 12px;
+  cursor:pointer;
+  font-weight:800;
+}
+
 .idea-layout { display:grid; grid-template-columns: 320px minmax(0,1fr); gap:22px; align-items:start; }
 .idea-form-card {
   background: var(--paper-2);
@@ -334,11 +431,16 @@ a { color: inherit; }
   .admin-row { grid-template-columns:1fr; gap:5px; }
   .admin-row label { padding-top:0; }
   .decision { grid-template-columns:1fr; gap:4px; }
+  .idea-guide { grid-template-columns:125px minmax(0,1fr); }
+  .idea-guide-character img { width:120px; }
+  .idea-guide-dialogue { margin-left:4px; }
 }
 
 @media (max-width: 560px) {
   .header-inner, .hero, .main, .admin-shell { padding-left:14px; padding-right:14px; }
   .phase-stamp { display:none; }
+  .header-actions { gap:6px; }
+  .language-toggle button { min-width:41px; padding:5px 7px; }
   .brand { align-items:flex-start; flex-direction:column; gap:1px; }
   .hero h1 { font-size:3.05rem; }
   .doc-page { padding:22px 17px; }
@@ -346,4 +448,11 @@ a { color: inherit; }
   .section-head { align-items:flex-start; flex-direction:column; }
   .map-wrap { min-height:590px; }
   .map-node { width:145px; font-size:.86rem; }
+  .idea-guide { grid-template-columns:92px minmax(0,1fr); min-height:155px; }
+  .idea-guide-character { height:153px; }
+  .idea-guide-character img { width:98px; transform:translateY(5px); }
+  .idea-guide-dialogue { margin:16px 45px 16px 0; padding:13px 12px 11px; }
+  .idea-guide-dialogue::before { left:-10px; width:16px; height:16px; }
+  .idea-guide-dialogue p { min-height:4.6em; font-size:.9rem; margin-top:5px; }
+  .idea-guide-controls { gap:8px; }
 }
