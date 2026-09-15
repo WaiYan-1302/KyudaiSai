@@ -9,13 +9,13 @@
 <body>
   <div class="admin-shell" style="max-width:900px">
     <header class="admin-head">
-      <div><div class="doc-eyebrow">ONE-TIME SETUP</div><h1>Config Builder</h1><p style="color:var(--muted);line-height:1.6">Local mode needs no setup. Fill this only if you want shared Ideas + Mindmaps or an admin convenience PIN.</p></div>
+      <div><div class="doc-eyebrow">ONE-TIME SETUP</div><h1>Config Builder</h1><p style="color:var(--muted);line-height:1.6">Local mode needs no setup. Fill this only if you want shared Ideas, Mindmaps, and Timeline data or an admin convenience PIN.</p></div>
       <a class="btn ghost" href="./admin.html">← ADMIN</a>
     </header>
     <main class="admin-panel">
       <h2>Shared mode (Firebase)</h2>
       <p style="color:var(--muted);line-height:1.7">Paste the values from Firebase Console → Project settings → Your apps → Web app. The web config is intended to be public; access is controlled by Firestore rules. Use the included <code>firestore.rules</code>.</p>
-      <div class="admin-row"><label>Enable Firebase</label><div><input id="enabled" type="checkbox"> <span>Sync team ideas and mindmap</span></div></div>
+      <div class="admin-row"><label>Enable Firebase</label><div><input id="enabled" type="checkbox"> <span>Sync team ideas, mindmap, and timeline</span></div></div>
       <div class="admin-row"><label>Room ID</label><input id="roomId" placeholder="make-this-long-and-random"></div>
       <div class="admin-row"><label>apiKey</label><input id="apiKey"></div>
       <div class="admin-row"><label>authDomain</label><input id="authDomain"></div>
