@@ -34,7 +34,7 @@
     <section class="hero">
       <div>
         <h1 id="heroTitle">KYUDAI SAI / KOHO</h1>
-        <p class="jp-tagline" id="heroTagline">九大祭に来たくなる理由をつくる。</p>
+        <p class="jp-tagline" id="heroTagline">HarmoQへ会いに行く理由を届ける。</p>
       </div>
       <aside class="hero-note" id="countdownBox"></aside>
     </section>
@@ -45,6 +45,21 @@
           <div><h2 id="planHeading">企画・資料</h2></div>
           <p>資料を「ファイルの山」ではなく、読みやすいページとして共有する場所。</p>
         </div>
+        <section class="idea-guide" id="planGuide" aria-labelledby="planGuideTitle">
+          <button class="idea-guide-close" id="planGuideClose" type="button" aria-label="ガイドを隠す">×</button>
+          <div class="idea-guide-character" aria-hidden="true">
+            <img id="planGuideSprite" src="./assets/MainTabDialogue/harmoq_cat2_01.png" alt="">
+          </div>
+          <div class="idea-guide-dialogue">
+            <div class="idea-guide-kicker" id="planGuideTitle">NOTEBOOK GUIDE</div>
+            <p id="planGuideText"></p>
+            <div class="idea-guide-controls">
+              <span id="planGuideProgress" aria-live="polite"></span>
+              <button class="btn small" id="planGuideNext" type="button">次へ →</button>
+            </div>
+          </div>
+        </section>
+        <button class="idea-guide-show" id="planGuideShow" type="button" hidden>💡 使い方ガイドを表示</button>
         <div class="paper-layout">
           <aside class="doc-sidebar"><div class="doc-list" id="docList"></div></aside>
           <article class="doc-page" id="docPage"></article>
@@ -62,7 +77,7 @@
             <img id="ideaGuideSprite" src="./assets/dialogueAni1/harmoq_cat_01.png" alt="">
           </div>
           <div class="idea-guide-dialogue">
-            <div class="idea-guide-kicker" id="ideaGuideTitle">HARMOQ GUIDE</div>
+            <div class="idea-guide-kicker" id="ideaGuideTitle">NOTEBOOK GUIDE</div>
             <p id="ideaGuideText"></p>
             <div class="idea-guide-controls">
               <span id="ideaGuideProgress" aria-live="polite"></span>

@@ -74,7 +74,7 @@ function blankBlock(type){
   if(type==='callout'||type==='quote')return{type,title:type==='quote'?'Quote':'Core idea',text:'Write here.'};
   if(type==='checklist')return{type,title:'Checklist',items:[{text:'New item',done:false}]};
   if(type==='timeline')return{type,title:'Timeline',items:[{date:'DATE',title:'Step',text:'Details'}]};
-  if(type==='cards')return{type,items:[{title:'Card',text:'Details'}]};
+  if(type==='cards')return{type,title:'Cards',items:[{title:'Card',text:'Details'}]};
   if(type==='split')return{type,left:{title:'Left',text:'Details'},right:{title:'Right',text:'Details'}};
   if(type==='links')return{type,title:'Links',items:[{label:'Link',url:'https://',note:''}]};
   return{type};
@@ -96,7 +96,7 @@ function blockFields(b){
   if(b.type==='callout'||b.type==='quote')return fields([['Title','title',b.title],['Text','text',b.text,true]]);
   if(b.type==='checklist')return fields([['Title','title',b.title],['Items: one per line; use [x] or [ ]','itemsText',(b.items||[]).map(i=>`${i.done?'[x]':'[ ]'} ${i.text}`).join('\n'),true]]);
   if(b.type==='timeline')return fields([['Title','title',b.title],['Items: DATE | TITLE | TEXT','timelineText',(b.items||[]).map(i=>`${i.date} | ${i.title} | ${i.text}`).join('\n'),true]]);
-  if(b.type==='cards')return fields([['Cards: TITLE | TEXT','cardsText',(b.items||[]).map(i=>`${i.title} | ${i.text}`).join('\n'),true]]);
+  if(b.type==='cards')return fields([['Section title','title',b.title],['Cards: TITLE | TEXT','cardsText',(b.items||[]).map(i=>`${i.title} | ${i.text}`).join('\n'),true]]);
   if(b.type==='split')return fields([['Left title','leftTitle',b.left?.title],['Left text','leftText',b.left?.text,true],['Right title','rightTitle',b.right?.title],['Right text','rightText',b.right?.text,true]]);
   if(b.type==='links')return fields([['Title','title',b.title],['Links: LABEL | URL | NOTE','linksText',(b.items||[]).map(i=>`${i.label} | ${i.url} | ${i.note||''}`).join('\n'),true]]);
   return '<p>Unknown block type. Use Raw JSON to edit it.</p>';
@@ -112,7 +112,7 @@ function readAllBlocks(doc){
     if(type==='callout'||type==='quote')return{type,title:v('title'),text:v('text')};
     if(type==='checklist')return{type,title:v('title'),items:v('itemsText').split('\n').filter(Boolean).map(line=>({done:/^\s*\[x\]/i.test(line),text:line.replace(/^\s*\[[x ]\]\s*/i,'')}))};
     if(type==='timeline')return{type,title:v('title'),items:v('timelineText').split('\n').filter(Boolean).map(line=>{const [date='',title='',...rest]=line.split('|').map(x=>x.trim());return{date,title,text:rest.join(' | ')}})};
-    if(type==='cards')return{type,items:v('cardsText').split('\n').filter(Boolean).map(line=>{const [title='',...rest]=line.split('|').map(x=>x.trim());return{title,text:rest.join(' | ')}})};
+    if(type==='cards')return{type,title:v('title'),items:v('cardsText').split('\n').filter(Boolean).map(line=>{const [title='',...rest]=line.split('|').map(x=>x.trim());return{title,text:rest.join(' | ')}})};
     if(type==='split')return{type,left:{title:v('leftTitle'),text:v('leftText')},right:{title:v('rightTitle'),text:v('rightText')}};
     if(type==='links')return{type,title:v('title'),items:v('linksText').split('\n').filter(Boolean).map(line=>{const [label='',url='',...rest]=line.split('|').map(x=>x.trim());return{label,url,note:rest.join(' | ')}})};
     return {type};
