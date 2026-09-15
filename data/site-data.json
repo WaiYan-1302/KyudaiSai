@@ -1,0 +1,121 @@
+{
+  "site": {
+    "title": "KYUDAI SAI / KOHO",
+    "subtitle": "Festival Notebook",
+    "tagline": "九大祭に来たくなる理由をつくる。",
+    "phase": "IDEAS → PLANNING",
+    "festivalDate": "2026-11-01",
+    "accent": "#F0642B",
+    "repoUrl": ""
+  },
+  "documents": [
+    {
+      "id": "start-here",
+      "title": "Start Here",
+      "eyebrow": "00 / GUIDE",
+      "summary": "このサイトは、広報の考え・決定・資料を一か所にまとめるための共同ノートです。",
+      "updated": "2026-09-15",
+      "tags": ["guide", "team"],
+      "blocks": [
+        {
+          "type": "callout",
+          "tone": "marker",
+          "title": "Core idea",
+          "text": "九大祭に来たくなる理由をつくる。"
+        },
+        {
+          "type": "text",
+          "title": "How to use this space",
+          "body": "Plan では現在の考えや資料を読む。Ideas では思いつきを気軽に共有する。Mindmap ではアイデア同士をつなげる。Decisions では『結局どうなった？』を残す。"
+        },
+        {
+          "type": "cards",
+          "items": [
+            {"title": "PLAN", "text": "考え・方針・資料を読みやすく整理"},
+            {"title": "IDEAS", "text": "30秒で投げられるアイデア箱"},
+            {"title": "MINDMAP", "text": "企画を枝分かれさせながら考える"},
+            {"title": "DECISIONS", "text": "決まったことだけを短く記録"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "koho-plan",
+      "title": "広報の現在地",
+      "eyebrow": "01 / CURRENT DIRECTION",
+      "summary": "まだ完成した戦略ではなく、今の仮説を共有するためのページ。",
+      "updated": "2026-09-15",
+      "tags": ["plan", "koho"],
+      "blocks": [
+        {
+          "type": "text",
+          "title": "What we're trying to achieve",
+          "body": "HarmoQ をまだ知らない人にも、九大祭で『ちょっと見てみたい』と思ってもらう。投稿数を増やすことより、来場の理由を作ることを優先する。"
+        },
+        {
+          "type": "split",
+          "left": {"title": "Instagram", "text": "雰囲気 / 人 / 写真 / Reels / 保存したくなる投稿"},
+          "right": {"title": "X", "text": "告知 / 更新 / リマインド / 当日の即時情報"}
+        },
+        {
+          "type": "checklist",
+          "title": "Open questions",
+          "items": [
+            {"text": "バンド紹介をどんなフォーマットにする？", "done": false},
+            {"text": "英語をどの程度併記する？", "done": false},
+            {"text": "カウントダウン投稿をする？", "done": false},
+            {"text": "Behind the scenes / 練習風景を出す？", "done": false}
+          ]
+        },
+        {
+          "type": "timeline",
+          "title": "Simple working rhythm",
+          "items": [
+            {"date": "NOW", "title": "Collect", "text": "アイデアを集める"},
+            {"date": "NEXT", "title": "Choose", "text": "やる企画を絞る"},
+            {"date": "THEN", "title": "Make", "text": "素材・文章・投稿を作る"},
+            {"date": "FESTIVAL", "title": "Show up", "text": "当日まで継続して発信"}
+          ]
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "date": "2026-09-15",
+      "title": "Festival Notebook を広報の共有場所として使う",
+      "detail": "Plan / Ideas / Mindmap / Decisions の4つを最初の構成にする。"
+    }
+  ],
+  "starterIdeas": [
+    {
+      "id": "starter-1",
+      "title": "Rehearsal mini-vlogs",
+      "category": "VIDEO",
+      "text": "練習の短い断片を15〜25秒の縦動画で出す。完成品だけでなく準備中の空気を見せる。",
+      "author": "sample",
+      "createdAt": "2026-09-15T00:00:00.000Z"
+    },
+    {
+      "id": "starter-2",
+      "title": "One fact about each band",
+      "category": "INSTAGRAM",
+      "text": "バンド紹介を経歴だけにせず、『このバンドを見る理由』になる一言を添える。",
+      "author": "sample",
+      "createdAt": "2026-09-15T00:00:00.000Z"
+    }
+  ],
+  "mindmaps": [
+    {
+      "id": "main",
+      "title": "九大祭 広報 ideas",
+      "nodes": [
+        {"id": "root", "parentId": null, "text": "九大祭に来たくなる理由", "x": 470, "y": 260},
+        {"id": "n1", "parentId": "root", "text": "People", "x": 170, "y": 120},
+        {"id": "n2", "parentId": "root", "text": "Performance", "x": 170, "y": 400},
+        {"id": "n3", "parentId": "root", "text": "Festival mood", "x": 760, "y": 120},
+        {"id": "n4", "parentId": "root", "text": "Useful info", "x": 760, "y": 400}
+      ]
+    }
+  ]
+}

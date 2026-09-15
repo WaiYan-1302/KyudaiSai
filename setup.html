@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <title>Festival Notebook Setup</title>
+</head>
+<body>
+  <div class="admin-shell" style="max-width:900px">
+    <header class="admin-head">
+      <div><div class="doc-eyebrow">ONE-TIME SETUP</div><h1>Config Builder</h1><p style="color:var(--muted);line-height:1.6">Local mode needs no setup. Fill this only if you want shared Ideas + Mindmaps or an admin convenience PIN.</p></div>
+      <a class="btn ghost" href="./admin.html">← ADMIN</a>
+    </header>
+    <main class="admin-panel">
+      <h2>Shared mode (Firebase)</h2>
+      <p style="color:var(--muted);line-height:1.7">Paste the values from Firebase Console → Project settings → Your apps → Web app. The web config is intended to be public; access is controlled by Firestore rules. Use the included <code>firestore.rules</code>.</p>
+      <div class="admin-row"><label>Enable Firebase</label><div><input id="enabled" type="checkbox"> <span>Sync team ideas and mindmap</span></div></div>
+      <div class="admin-row"><label>Room ID</label><input id="roomId" placeholder="make-this-long-and-random"></div>
+      <div class="admin-row"><label>apiKey</label><input id="apiKey"></div>
+      <div class="admin-row"><label>authDomain</label><input id="authDomain"></div>
+      <div class="admin-row"><label>projectId</label><input id="projectId"></div>
+      <div class="admin-row"><label>storageBucket</label><input id="storageBucket"></div>
+      <div class="admin-row"><label>messagingSenderId</label><input id="messagingSenderId"></div>
+      <div class="admin-row"><label>appId</label><input id="appId"></div>
+      <hr style="border:0;border-top:1px solid var(--line);margin:28px 0">
+      <h2>Admin convenience PIN</h2>
+      <p style="color:var(--muted);line-height:1.7">Optional. This only hides <code>admin.html</code> behind a browser-side PIN. It does not protect files or Firebase.</p>
+      <div class="admin-row"><label>PIN</label><input id="pin" type="password" placeholder="leave blank for no lock"></div>
+      <div class="toolbar" style="margin-top:24px"><button class="btn primary" id="downloadConfig">Download config.js</button></div>
+      <div class="mode-note">After downloading, replace <code>assets/js/config.js</code> in the repo and commit.</div>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script type="module">
+    const $=s=>document.querySelector(s);
+    async function hashHex(value){if(!value)return '';const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value));return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('')}
+    $('#downloadConfig').onclick=async()=>{
+      const pinHash=await hashHex($('#pin').value);
+      const q=v=>JSON.stringify($(v).value.trim());
+      const content=`export const APP_CONFIG = {\n  firebase: {\n    enabled: ${$('#enabled').checked},\n    roomId: ${q('#roomId')},\n    apiKey: ${q('#apiKey')},\n    authDomain: ${q('#authDomain')},\n    projectId: ${q('#projectId')},\n    storageBucket: ${q('#storageBucket')},\n    messagingSenderId: ${q('#messagingSenderId')},\n    appId: ${q('#appId')}\n  },\n  adminPinHash: ${JSON.stringify(pinHash)}\n};\n`;
+      const blob=new Blob([content],{type:'text/javascript'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='config.js';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+      const t=$('#toast');t.textContent='Downloaded config.js';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);
+    };
+  </script>
+</body>
+</html>

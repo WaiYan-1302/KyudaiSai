@@ -1,0 +1,20 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /rooms/{roomId}/ideas/{ideaId} {
+      allow read: if true;
+      allow create: if request.auth != null
+                    && request.resource.data.title is string
+                    && request.resource.data.text is string
+                    && request.resource.data.title.size() <= 80
+                    && request.resource.data.text.size() <= 600;
+      allow update, delete: if false;
+    }
+
+    match /rooms/{roomId}/mindmaps/{mapId} {
+      allow read: if true;
+      allow create, update: if request.auth != null;
+      allow delete: if false;
+    }
+  }
+}

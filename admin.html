@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f5f0e6">
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <title>Festival Notebook Admin</title>
+</head>
+<body>
+  <div id="lockRoot"></div>
+  <div class="admin-shell" id="adminRoot" hidden>
+    <header class="admin-head">
+      <div>
+        <div class="doc-eyebrow">FESTIVAL NOTEBOOK</div>
+        <h1>Admin / Editor</h1>
+        <p style="color:var(--muted);max-width:720px;line-height:1.6">Edit the site's JSON without touching code. When finished, download or save <code>data/site-data.json</code>, replace that file in GitHub, and commit.</p>
+      </div>
+      <div class="toolbar">
+        <a href="./" class="btn ghost">← SITE</a>
+        <a href="./setup.html" class="btn ghost">SETUP</a>
+        <button id="openFileBtn" class="btn ghost">Open JSON</button>
+        <button id="saveFileBtn" class="btn ghost" disabled>Save file</button>
+        <button id="downloadBtn" class="btn primary">Download JSON</button>
+      </div>
+    </header>
+
+    <div class="admin-grid">
+      <aside class="admin-sidebar">
+        <button class="active" data-panel="settings">Site settings</button>
+        <button data-panel="documents">Documents</button>
+        <button data-panel="decisions">Decisions</button>
+        <button data-panel="json">Raw JSON</button>
+        <hr style="border:0;border-top:1px solid var(--line);margin:10px 0">
+        <button id="reloadStarterBtn">Reload deployed data</button>
+      </aside>
+      <main class="admin-panel" id="adminPanel"></main>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script type="module" src="./assets/js/admin.js"></script>
+</body>
+</html>
