@@ -9,6 +9,7 @@ A static, GitHub-Pages-ready workspace for the festival publicity team.
 - **MINDMAP** — draggable nodes; add children, edit, delete, and reorganize ideas.
 - **DECISIONS** — a short log of what was actually decided.
 - **TIMELINE** — a shared, editable publicity schedule with milestone details and status tracking.
+- **ZOOM POLL** — a shared availability table with required names and ○ / × / ? responses for each candidate time.
 - **ADMIN / EDITOR** — edit site settings, documents, visual blocks, and decisions without manually writing JSON.
 - **SETUP HELPER** — generates `assets/js/config.js` for Firebase sharing and an optional admin PIN.
 - Responsive **Festival Notebook** visual system for phones and desktop.
@@ -59,7 +60,7 @@ The admin supports the File System Access API:
 
 Safari/Firefox can use the Download JSON workflow instead.
 
-## 3. Shared Ideas + Mindmaps
+## 3. Shared Ideas + Mindmaps + Timeline + Zoom Poll
 
 The site starts in **Local demo mode** so it works immediately. In that mode, new ideas and mindmap edits are only stored in that browser.
 
@@ -85,6 +86,7 @@ After that:
 - member ideas are shared
 - the mindmap is shared
 - timeline additions and edits are shared
+- Zoom candidate times and availability responses are shared
 - the site still remains a static GitHub Pages site
 
 ### Important security note
@@ -93,8 +95,9 @@ The supplied Firestore rules are intentionally simple for a student-team workspa
 
 - anyone can read ideas/mindmaps
 - authenticated anonymous users can post ideas
+- authenticated anonymous users can delete ideas after typing the exact uppercase confirmation `DELETE`
 - authenticated anonymous users can edit the shared mindmap
-- idea edits/deletes are blocked from the public client
+- idea edits remain blocked from the public client
 
 This is suitable for a small internal collaboration site, but it is **not a private or high-security system**. A determined person who finds the site can interact with the public collaboration features. If you later need stronger access control, use Firebase email/Google authentication and UID-based rules.
 

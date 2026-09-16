@@ -50,6 +50,24 @@ export async function addIdea(idea) {
   return { id: ref.id, ...idea };
 }
 
+export async function getDeletedStarterIdeaIds() {
+  if (!ready) return [];
+  const snap = await firebase.storeMod.getDocs(roomCollection('ideaDeletions'));
+  return snap.docs.map(d => d.id);
+}
+
+export async function deleteIdea(ideaId, isStarter = false) {
+  if (!ready) return false;
+  if (isStarter) {
+    await firebase.storeMod.setDoc(roomDoc('ideaDeletions', ideaId), {
+      deletedAt: new Date().toISOString()
+    });
+  } else {
+    await firebase.storeMod.deleteDoc(roomDoc('ideas', ideaId));
+  }
+  return true;
+}
+
 export async function getMindmap(mapId = 'main') {
   if (!ready) return null;
   const ref = roomDoc('mindmaps', mapId);
@@ -76,6 +94,21 @@ export async function saveTimeline(timeline) {
   if (!ready) return false;
   const ref = roomDoc('timelines', timeline.id || 'main');
   const { id, ...payload } = timeline;
+  await firebase.storeMod.setDoc(ref, payload, { merge: true });
+  return true;
+}
+
+export async function getZoomPoll(pollId = 'main') {
+  if (!ready) return null;
+  const ref = roomDoc('zoomPolls', pollId);
+  const snap = await firebase.storeMod.getDoc(ref);
+  return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+}
+
+export async function saveZoomPoll(poll) {
+  if (!ready) return false;
+  const ref = roomDoc('zoomPolls', poll.id || 'main');
+  const { id, ...payload } = poll;
   await firebase.storeMod.setDoc(ref, payload, { merge: true });
   return true;
 }

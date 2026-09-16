@@ -28,6 +28,7 @@
           <button data-view="mindmap">03 マインドマップ</button>
           <button data-view="decisions">04 決定事項</button>
           <button data-view="timeline">05 タイムライン</button>
+          <button data-view="zoom">06 Zoom日程</button>
         </nav>
       </div>
     </header>
@@ -147,6 +148,42 @@
         </div>
         <div class="project-timeline" id="timelineList"></div>
         <div class="mode-note timeline-mode" id="timelineMode"></div>
+      </section>
+
+      <section class="view" id="view-zoom">
+        <div class="section-head">
+          <div><h2 id="zoomHeading">Zoom日程調整</h2></div>
+          <p id="zoomDescription">名前を入力し、各候補日時に ○・×・? で回答してください。</p>
+        </div>
+        <div class="zoom-layout">
+          <section class="zoom-panel zoom-response-panel">
+            <div class="doc-eyebrow">YOUR AVAILABILITY</div>
+            <h3 id="zoomResponseHeading">自分の予定を回答</h3>
+            <div class="zoom-legend" id="zoomLegend"><span><b>○</b> 参加できる</span><span><b>×</b> 参加できない</span><span><b>?</b> まだ分からない</span></div>
+            <form id="zoomResponseForm">
+              <div class="form-row"><label for="zoomName" id="zoomNameLabel">名前（必須）</label><input id="zoomName" maxlength="40" required autocomplete="name" placeholder="名前を入力"></div>
+              <div class="zoom-choice-list" id="zoomChoiceList"></div>
+              <button class="btn primary" id="saveZoomResponseBtn" type="submit">回答を保存 →</button>
+            </form>
+            <div class="mode-note" id="zoomMode"></div>
+          </section>
+
+          <aside class="zoom-panel zoom-slot-panel">
+            <div class="doc-eyebrow">CANDIDATE TIMES</div>
+            <h3 id="zoomSlotHeading">候補日時</h3>
+            <div class="zoom-candidate-list" id="zoomCandidateList"></div>
+            <form id="zoomSlotForm" class="zoom-slot-form">
+              <div class="form-row"><label for="zoomSlotDate" id="zoomSlotDateLabel">候補日</label><input id="zoomSlotDate" type="date" required></div>
+              <div class="form-row"><label for="zoomSlotTime" id="zoomSlotTimeLabel">開始時刻</label><input id="zoomSlotTime" type="time" required></div>
+              <button class="btn small" id="addZoomSlotBtn" type="submit">+ 候補を追加</button>
+            </form>
+          </aside>
+        </div>
+
+        <section class="zoom-results-panel">
+          <div class="zoom-results-head"><div><div class="doc-eyebrow">TEAM RESPONSES</div><h3 id="zoomResultsHeading">みんなの回答</h3></div><p id="zoomResultsHint">自分の名前の「編集」を押すと回答を更新できます。</p></div>
+          <div class="zoom-results" id="zoomResults"></div>
+        </section>
       </section>
     </main>
   </div>
