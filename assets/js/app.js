@@ -17,6 +17,8 @@ let guideStep = 0;
 let spriteFrame = 0;
 let planGuideStep = 0;
 let planSpriteFrame = 0;
+let zoomGuideStep = 0;
+let zoomSpriteFrame = 0;
 let timelineModalLastFocus = null;
 
 const UI = {
@@ -32,7 +34,7 @@ const UI = {
     timelineStatuses: {planned:'予定',active:'進行中',done:'完了'}, timelineOpenHint: '押して詳細・編集 →', timelineTotal: '全体', timelineEmpty: 'まだ予定がありません。「予定を追加」から始めましょう。',
     timelineShared: '<strong>共有モード：</strong> タイムラインの編集はFirebaseでチームに保存されます。', timelineLocal: '<strong>ローカル体験モード：</strong> タイムラインの編集はこのブラウザに保存されます。',
     timelineModalNew: '予定を追加', timelineModalEdit: '予定の詳細・編集', timelineDate: '日付', timelineDateText: '表示する日付', timelineDatePlaceholder: '例：9月後半〜', timelineTitle: 'タイトル', timelineDetails: '詳細', timelineStatus: '状態', timelineSave: '保存', timelineDelete: '削除', timelineClose: '閉じる', timelineDeleteConfirm: 'この予定を削除しますか？', timelineSaved: 'タイムラインを保存しました。', timelineDeleted: '予定を削除しました。', timelineFailed: 'タイムラインを保存できませんでした。',
-    zoomHeading: 'Zoom日程調整', zoomDescription: '名前を入力し、各候補日時に ○・×・? で回答してください。', zoomResponseHeading: '自分の予定を回答', zoomNameLabel: '名前（必須）', zoomNamePlaceholder: '名前を入力', zoomSave: '回答を保存 →', zoomSlotHeading: '候補日時', zoomSlotDate: '候補日', zoomSlotTime: '開始時刻', zoomAddSlot: '+ 候補を追加', zoomResultsHeading: 'みんなの回答', zoomResultsHint: '自分の名前の「編集」を押すと回答を更新できます。', zoomAvailable: '参加できる', zoomUnavailable: '参加できない', zoomUnsure: 'まだ分からない', zoomEdit: '編集', zoomNoSlots: '候補日時がまだありません。', zoomNoResponses: 'まだ回答がありません。最初の回答を追加しましょう。', zoomSummary: '○ の人数', zoomNameRequired: '回答を保存するには名前を入力してください。', zoomResponseSaved: 'Zoom日程の回答を保存しました。', zoomSlotAdded: '候補日時を追加しました。', zoomDuplicateSlot: '同じ候補日時がすでにあります。', zoomSlotDeleted: '候補日時を削除しました。', zoomSlotDeleteConfirm: 'この候補日時を削除しますか？全員の回答からも削除されます。', zoomFailed: 'Zoom日程を保存できませんでした。', zoomShared: '<strong>共有モード：</strong> 回答はFirebaseでチームに共有されます。', zoomLocal: '<strong>ローカル体験モード：</strong> 回答はこのブラウザに保存されます。',
+    zoomHeading: 'Zoom日程調整', zoomDescription: '9月21日〜25日の候補について、名前を入力し ○・×・? で回答してください。', zoomResponseHeading: '自分の予定を回答', zoomNameLabel: '名前（必須）', zoomNamePlaceholder: '名前を入力', zoomSave: '回答を保存 →', zoomSlotHeading: '候補日時', zoomSlotDate: '候補日', zoomSlotTime: '開始時刻', zoomAddSlot: '+ 候補を追加', zoomResultsHeading: 'みんなの回答', zoomResultsHint: '自分の名前の「編集」を押すと回答を更新できます。', zoomAvailable: '参加できる', zoomUnavailable: '参加できない', zoomUnsure: 'まだ分からない', zoomEdit: '編集', zoomNoSlots: '候補日時がまだありません。', zoomNoResponses: 'まだ回答がありません。最初の回答を追加しましょう。', zoomSummary: '○ の人数', zoomNameRequired: '回答を保存するには名前を入力してください。', zoomResponseSaved: 'Zoom日程の回答を保存しました。', zoomSlotAdded: '候補日時を追加しました。', zoomDuplicateSlot: '同じ候補日時がすでにあります。', zoomSlotDeleted: '候補日時を削除しました。', zoomSlotDeleteConfirm: 'この候補日時を削除しますか？全員の回答からも削除されます。', zoomFailed: 'Zoom日程を保存できませんでした。', zoomShared: '<strong>共有モード：</strong> 回答はFirebaseでチームに共有されます。', zoomLocal: '<strong>ローカル体験モード：</strong> 回答はこのブラウザに保存されます。',
     titleLabel: 'アイデアのタイトル', titlePlaceholder: '例：練習ミニVlog', categoryLabel: 'カテゴリー', textLabel: 'どんなアイデア？', textPlaceholder: '短くてOK。どんな内容？', authorLabel: '名前 <span style="font-weight:400">（任意）</span>', authorPlaceholder: '匿名', postIdea: 'アイデアを投稿 →',
     filter: '絞り込み', categories: { ALL: 'すべて', INSTAGRAM: 'Instagram', X: 'X', VIDEO: '動画', 'POSTER / FLYER': 'ポスター・チラシ', 'ON CAMPUS': '学内企画', OTHER: 'その他' },
     checkingMode: '共有モードを確認中…', sharedMode: '<strong>共有モード：</strong> アイデアとマインドマップはFirebaseでチームに共有されます。', localMode: '<strong>ローカル体験モード：</strong> 投稿はこのブラウザにのみ保存されます。チームで共有するには <code>assets/js/config.js</code> でFirebaseを有効にしてください。',
@@ -41,6 +43,7 @@ const UI = {
     noDecisions: 'まだ決定事項はありません。', updated: '更新', guideTitle: 'NOTEBOOK GUIDE', guideNext: '次へ →', guideRestart: '最初へ ↺', guideHide: 'ガイドを隠す', guideShow: '💡 使い方ガイドを表示',
     guideSteps: ['ここは、思いつきを気軽に持ち寄る場所だよ。完成していなくても大丈夫！', '左のフォームにタイトルと内容を書いて、「アイデアを投稿」を押してね。名前は空欄でもOK。', '「絞り込み」を使うと、SNSや動画などカテゴリー別にアイデアを見られるよ。', 'まずは小さなひらめきから。みんなのアイデアを組み合わせて、HarmoQへ会いに行くきっかけを届けよう！'],
     planGuideSteps: ['ここは、九大祭広報の方針や資料をまとめて読む場所だよ。', '左の一覧から読みたいページを選ぶと、右側に内容が表示されるよ。', 'まずは「広報プラン」を開いて、今の方向性・投稿案・スケジュールを確認してね。', '内容はまだ相談中。気づいたことや提案があれば、アイデアタブで共有しよう！'],
+    zoomGuideTitle: 'ZOOM 日程ガイド', zoomGuideShow: '💡 Zoom日程ガイドを表示', zoomGuideSteps: ['まず名前を入力してね。名前がないと回答は保存できないよ！', '各候補時間で、参加できるなら「○」、参加できないなら「×」、まだ分からないなら「?」を選んでね。', '全部選んだら「回答を保存」を押そう。みんなの回答表ですぐ確認できるよ。', '回答を変えたいときは、自分の名前の「編集」を押せばいつでも更新できるよ！'],
     loadErrorTitle: 'ノートを読み込めませんでした', loadErrorHelp: 'GitHub PagesなどのHTTPサーバーから開いてください。index.htmlを直接開くと、JSONの読み込みがブロックされることがあります。'
   },
   en: {
@@ -50,12 +53,13 @@ const UI = {
     timelineStatuses: {planned:'PLANNED',active:'IN PROGRESS',done:'DONE'}, timelineOpenHint: 'OPEN DETAILS / EDIT →', timelineTotal: 'TOTAL', timelineEmpty: 'No milestones yet. Select “Add milestone” to create the first one.',
     timelineShared: '<strong>Shared mode:</strong> Timeline edits are saved to Firebase for the team.', timelineLocal: '<strong>Local demo mode:</strong> Timeline edits are saved in this browser.',
     timelineModalNew: 'Add milestone', timelineModalEdit: 'Milestone details / Edit', timelineDate: 'DATE', timelineDateText: 'DISPLAY DATE', timelineDatePlaceholder: 'e.g. Late September', timelineTitle: 'TITLE', timelineDetails: 'DESCRIPTION', timelineStatus: 'STATUS', timelineSave: 'SAVE', timelineDelete: 'DELETE', timelineClose: 'Close', timelineDeleteConfirm: 'Delete this milestone?', timelineSaved: 'Timeline saved.', timelineDeleted: 'Milestone deleted.', timelineFailed: 'Could not save the timeline.',
-    zoomHeading: 'Zoom availability', zoomDescription: 'Enter your name and answer ○, ×, or ? for each candidate time.', zoomResponseHeading: 'Add your availability', zoomNameLabel: 'NAME (REQUIRED)', zoomNamePlaceholder: 'Enter your name', zoomSave: 'SAVE RESPONSE →', zoomSlotHeading: 'Candidate times', zoomSlotDate: 'DATE', zoomSlotTime: 'START TIME', zoomAddSlot: '+ ADD TIME', zoomResultsHeading: 'Team responses', zoomResultsHint: 'Select “Edit” beside your name to update your response.', zoomAvailable: 'Available', zoomUnavailable: 'Unavailable', zoomUnsure: 'Not sure yet', zoomEdit: 'Edit', zoomNoSlots: 'No candidate times yet.', zoomNoResponses: 'No responses yet. Add the first one.', zoomSummary: 'Available', zoomNameRequired: 'Enter your name before saving your response.', zoomResponseSaved: 'Zoom availability saved.', zoomSlotAdded: 'Candidate time added.', zoomDuplicateSlot: 'That candidate time already exists.', zoomSlotDeleted: 'Candidate time removed.', zoomSlotDeleteConfirm: 'Remove this candidate time? It will also be removed from every response.', zoomFailed: 'Could not save the Zoom poll.', zoomShared: '<strong>Shared mode:</strong> Responses sync through Firebase for the team.', zoomLocal: '<strong>Local demo mode:</strong> Responses are saved only in this browser.',
+    zoomHeading: 'Zoom availability', zoomDescription: 'Enter your name and answer ○, ×, or ? for the September 21–25 options.', zoomResponseHeading: 'Add your availability', zoomNameLabel: 'NAME (REQUIRED)', zoomNamePlaceholder: 'Enter your name', zoomSave: 'SAVE RESPONSE →', zoomSlotHeading: 'Candidate times', zoomSlotDate: 'DATE', zoomSlotTime: 'START TIME', zoomAddSlot: '+ ADD TIME', zoomResultsHeading: 'Team responses', zoomResultsHint: 'Select “Edit” beside your name to update your response.', zoomAvailable: 'Available', zoomUnavailable: 'Unavailable', zoomUnsure: 'Not sure yet', zoomEdit: 'Edit', zoomNoSlots: 'No candidate times yet.', zoomNoResponses: 'No responses yet. Add the first one.', zoomSummary: 'Available', zoomNameRequired: 'Enter your name before saving your response.', zoomResponseSaved: 'Zoom availability saved.', zoomSlotAdded: 'Candidate time added.', zoomDuplicateSlot: 'That candidate time already exists.', zoomSlotDeleted: 'Candidate time removed.', zoomSlotDeleteConfirm: 'Remove this candidate time? It will also be removed from every response.', zoomFailed: 'Could not save the Zoom poll.', zoomShared: '<strong>Shared mode:</strong> Responses sync through Firebase for the team.', zoomLocal: '<strong>Local demo mode:</strong> Responses are saved only in this browser.',
     titleLabel: 'IDEA TITLE', titlePlaceholder: 'e.g. Rehearsal mini-vlog', categoryLabel: 'CATEGORY', textLabel: "WHAT'S THE IDEA?", textPlaceholder: 'A short description is enough.', authorLabel: 'YOUR NAME <span style="font-weight:400">(optional)</span>', authorPlaceholder: 'anonymous', postIdea: 'POST IDEA →', filter: 'FILTER', categories: { ALL: 'ALL', INSTAGRAM: 'INSTAGRAM', X: 'X', VIDEO: 'VIDEO', 'POSTER / FLYER': 'POSTER / FLYER', 'ON CAMPUS': 'ON CAMPUS', OTHER: 'OTHER' },
     checkingMode: 'Checking sharing mode…', sharedMode: '<strong>Shared mode:</strong> Ideas and mindmaps sync through Firebase.', localMode: '<strong>Local demo mode:</strong> submissions are saved only in this browser. Enable Firebase in <code>assets/js/config.js</code> for team-wide sharing.', noIdeas: 'No ideas in this category yet.', anonymous: 'anonymous', ideaPosted: 'Idea shared with the team.', ideaSaved: 'Idea saved in this browser.', ideaFailed: 'Could not post the idea. Please check the sharing setup.', ideaDelete: 'Delete', ideaDeleteLabel: 'Delete this idea', ideaDeletePrompt: 'To permanently delete this idea, type DELETE in all capital letters.', ideaDeleteMismatch: 'Deletion cancelled. Type DELETE in all capital letters.', ideaDeleted: 'Idea deleted.', ideaDeleteFailed: 'Could not delete the idea. Please check the sharing setup.',
     addRoot: '+ Floating idea', resetMap: 'Reset starter map', mapHelp: 'Tip: You can drag cards on a phone too. Deleting a branch also removes all of its child ideas.', resetConfirm: 'Reset the mindmap to the starter version?', newIdeaPrompt: 'New floating idea', childPrompt: 'Child idea', editPrompt: 'Edit text', childAction: '+ child idea', editAction: 'edit', mapSaved: 'Mindmap saved.', mapFailed: 'Mindmap save failed.', noDecisions: 'No decisions yet.', updated: 'UPDATED',
     guideTitle: 'NOTEBOOK GUIDE', guideNext: 'NEXT →', guideRestart: 'START OVER ↺', guideHide: 'Hide guide', guideShow: '💡 Show the guide', guideSteps: ['This is a place to share quick sparks. Your idea does not have to be finished!', 'Add a title and short description in the form, then select “Post idea.” You can leave your name blank.', 'Use the filter to browse ideas by category, such as social media, video, or on-campus activities.', 'Start with one small thought. Combine everyone’s ideas and deliver a reason to visit HarmoQ!'],
     planGuideSteps: ['This is where you can read the direction and reference material for Kyudai Festival publicity.', 'Choose a page from the list on the left, and its contents will appear on the right.', 'Start with “Publicity Plan” to review the current direction, post ideas, and schedule.', 'The plan is still open for discussion. If you notice anything or have a suggestion, share it in the Ideas tab!'],
+    zoomGuideTitle: 'ZOOM SCHEDULING GUIDE', zoomGuideShow: '💡 Show the Zoom scheduling guide', zoomGuideSteps: ['Start by entering your name. A response cannot be saved without it!', 'For each candidate time, choose “○” if you can join, “×” if you cannot, or “?” if you are not sure yet.', 'When every choice looks right, select “Save response.” Your availability will appear in the team table.', 'Need to change something? Select “Edit” beside your name to update your response at any time.'],
     loadErrorTitle: 'Could not load the notebook', loadErrorHelp: 'Open the site through an HTTP server such as GitHub Pages. Opening index.html directly may block the JSON file.'
   }
 };
@@ -69,6 +73,7 @@ const EN_CONTENT = {
       summary:'This page collects my current ideas about the direction, posts, and workflow for publicity leading up to Kyudai Festival.',
       updated:'2026-09-16', tags:['publicity','social media','Kyudai Festival','ideas','proposal'],
       blocks:[
+        {type:'callout',tone:'translation',title:'About the Japanese translation',text:'AI translation was used to translate this document into Japanese. If anything is unclear or confusing, please feel free to ask me.'},
         {type:'callout',title:'Before you read',text:'Everything on this page is my personal proposal and current thinking. It has not yet been decided by the publicity team as a whole.\n\nI have referred to handover documents and previous publicity work, but I may have misunderstood something or included ideas that do not match this year’s direction.\n\nIf anything seems incorrect, could be improved, or inspires another idea, please feel free to tell me!'},
         {type:'text',title:'What I want publicity to achieve',body:'My main goal is to make the following clear even to people who do not know HarmoQ yet:\n\n“What kind of group is HarmoQ?”\n“Where can I see them at Kyudai Festival?”\n“When should I go?”\n\nI do not want to increase the number of posts for its own sake. I want our publicity to help interested people actually reach the classroom concerts, street performances, and main stage.\n\nPractical details such as the room number and main-stage time should be especially prominent. Ultimately, I hope to create this journey:\n\nDiscover HarmoQ → become interested → find the place and time → come and watch.'},
         {type:'callout',title:'Who we especially want to reach',text:'Of course, many friends, family members, and acquaintances of the performers will come to Kyudai Festival, and they are an important audience for HarmoQ.\n\nAt the same time, one of my main goals in publicity is to make people with no direct connection to a HarmoQ member think, “I’d like to go and see that.”\n\nI want people to come not only because a friend invited them or someone they know is performing, but also because they happened to discover us on social media, were looking for something interesting at Kyudai Festival, or were already curious about a cappella.\n\nTo make that possible, even someone seeing HarmoQ for the first time should immediately understand what kind of group we are, where they can see us, and when we are performing.'},
@@ -128,7 +133,7 @@ const EN_CONTENT = {
     'share-first-draft':{dateLabel:'Sep. 23',title:'Share the draft for feedback',description:'Share the first draft with the publicity members and collect feedback.'},
     'final-revisions':{dateLabel:'Sep. 24',title:'Final revisions and posting preparation',description:'Apply the feedback, complete the final revisions, and prepare the post.'},
     'first-social-post':{dateLabel:'Sep. 25',title:'First Instagram + X post',description:'Publish the first Kyudai Festival publicity post on Instagram and X.'},
-    'zoom-and-october-planning':{dateLabel:'Sep. 26–27',title:'Zoom meeting and October campaign planning',description:'Review progress on Zoom and plan the October publicity campaign and next posts.'},
+    'zoom-and-october-planning':{dateLabel:'Sep. 21–25',title:'Zoom meeting and October campaign planning',description:'Choose a Zoom time from September 21–25, review progress, and plan the October publicity campaign and next posts.'},
     'phase-information':{dateLabel:'Early October',title:'Phase 3: Practical details',description:'Release the places and times for the classroom concerts, street performances, and main stage in stages.'},
     'schedule-release':{dateLabel:'After schedule confirmation',title:'Schedule: Timetable',description:'Publish the detailed timetable for the classroom concerts and street performances.'},
     'reminder':{dateLabel:'1–2 weeks before',title:'Reminder: Place and time',description:'Prominently repeat the room number, location, and performance times in a clear format.'},
@@ -187,7 +192,7 @@ function setLanguage(lang) {
   $('.timeline-modal-close').setAttribute('aria-label',t().timelineClose);
   $('#zoomName').placeholder=t().zoomNamePlaceholder;
   $('#zoomLegend').innerHTML=`<span><b>○</b> ${t().zoomAvailable}</span><span><b>×</b> ${t().zoomUnavailable}</span><span><b>?</b> ${t().zoomUnsure}</span>`;
-  setTheme(); renderGuide(); renderPlanGuide();
+  setTheme(); renderGuide(); renderPlanGuide(); renderZoomGuide();
   if(data){renderDocList();renderIdeas();renderDecisions();renderMindmap();renderTimeline();renderZoomPoll();updateSyncMode();updateTimelineMode();updateZoomMode();}
 }
 
@@ -213,6 +218,17 @@ function initPlanGuide() {
 }
 function renderPlanGuide() { const steps=t().planGuideSteps;planGuideStep%=steps.length;$('#planGuideTitle').textContent=t().guideTitle;$('#planGuideText').textContent=steps[planGuideStep];$('#planGuideProgress').textContent=`${planGuideStep+1} / ${steps.length}`;$('#planGuideNext').textContent=planGuideStep===steps.length-1?t().guideRestart:t().guideNext;$('#planGuideClose').setAttribute('aria-label',t().guideHide);$('#planGuideShow').textContent=t().guideShow; }
 
+function initZoomGuide() {
+  const frames=Array.from({length:6},(_,index)=>`./assets/dialogueAni1/harmoq_cat_0${index+1}.png`);
+  frames.forEach(src=>{const image=new Image();image.src=src;});
+  setInterval(()=>{zoomSpriteFrame=(zoomSpriteFrame+1)%frames.length;$('#zoomGuideSprite').src=frames[zoomSpriteFrame];},170);
+  $('#zoomGuideNext').addEventListener('click',()=>{zoomGuideStep=(zoomGuideStep+1)%t().zoomGuideSteps.length;renderZoomGuide();});
+  $('#zoomGuideClose').addEventListener('click',()=>{$('#zoomGuide').hidden=true;$('#zoomGuideShow').hidden=false;});
+  $('#zoomGuideShow').addEventListener('click',()=>{$('#zoomGuide').hidden=false;$('#zoomGuideShow').hidden=true;});
+  renderZoomGuide();
+}
+function renderZoomGuide() { const steps=t().zoomGuideSteps;zoomGuideStep%=steps.length;$('#zoomGuideTitle').textContent=t().zoomGuideTitle;$('#zoomGuideText').textContent=steps[zoomGuideStep];$('#zoomGuideProgress').textContent=`${zoomGuideStep+1} / ${steps.length}`;$('#zoomGuideNext').textContent=zoomGuideStep===steps.length-1?t().guideRestart:t().guideNext;$('#zoomGuideClose').setAttribute('aria-label',t().guideHide);$('#zoomGuideShow').textContent=t().zoomGuideShow; }
+
 function initTabs() {
   $$('.nav button').forEach(btn=>btn.addEventListener('click',()=>{$$('.nav button').forEach(item=>item.classList.toggle('active',item===btn));$$('.view').forEach(view=>view.classList.remove('active'));$(`#view-${btn.dataset.view}`).classList.add('active');history.replaceState(null,'',`#${btn.dataset.view}`);if(btn.dataset.view==='mindmap')requestAnimationFrame(renderMindmap);}));
   const target=$(`.nav button[data-view="${location.hash.replace('#','')}"]`);if(target)target.click();
@@ -223,7 +239,7 @@ function selectDoc(id) { currentDocId=id;$$('#docList button').forEach(button=>b
 function renderDocument(doc) { return `<div class="doc-eyebrow">${html(doc.eyebrow||'')}</div><h2>${html(doc.title)}</h2><div class="doc-summary">${html(doc.summary||'')}</div><div class="doc-meta">${(doc.tags||[]).map(tag=>`<span class="tag">${html(tag)}</span>`).join('')}${doc.updated?`<span class="tag">${t().updated} ${html(doc.updated)}</span>`:''}</div>${(doc.blocks||[]).map(renderBlock).join('')}`; }
 function renderBlock(block) {
   if(block.type==='text')return`<section class="block"><h3>${html(block.title||'')}</h3><p>${richText(block.body||'')}</p></section>`;
-  if(block.type==='callout')return`<section class="block callout ${String(block.text||'').length>180?'long':''}"><h3>${html(block.title||'')}</h3><p>${richText(block.text||'')}</p></section>`;
+  if(block.type==='callout')return`<section class="block callout ${String(block.text||'').length>180?'long':''} ${block.tone==='translation'?'translation-notice':''}"><h3>${html(block.title||'')}</h3><p>${richText(block.text||'')}</p></section>`;
   if(block.type==='split')return`<section class="block split"><div class="split-card"><h3>${html(block.left?.title||'')}</h3><p>${richText(block.left?.text||'')}</p></div><div class="split-card"><h3>${html(block.right?.title||'')}</h3><p>${richText(block.right?.text||'')}</p></div></section>`;
   if(block.type==='cards')return`<section class="block cards-block">${block.title?`<h3>${html(block.title)}</h3>`:''}<div class="cards-grid">${(block.items||[]).map(item=>`<div class="mini-card"><h4>${html(item.title)}</h4><p>${richText(item.text)}</p></div>`).join('')}</div></section>`;
   if(block.type==='checklist')return`<section class="block"><h3>${html(block.title||'')}</h3><div class="checklist">${(block.items||[]).map(item=>`<div class="checkitem ${item.done?'done':''}"><span class="checkbox"></span><span>${html(item.text)}</span></div>`).join('')}</div></section>`;
@@ -287,9 +303,10 @@ function localizedTimelineItem(item){const translation=EN_CONTENT.timelineItems[
 function updateTimelineMode(){if($('#timelineMode'))$('#timelineMode').innerHTML=cloudEnabled()?t().timelineShared:t().timelineLocal;}
 function migrateTimeline(timeline){
   const targetVersion=Number(data.timeline?.schemaVersion||1);
-  if(Number(timeline?.schemaVersion||1)>=targetVersion)return false;
-  const replacementIds=new Set(['phase-awareness','phase-interest']);
-  timeline.items=(timeline.items||[]).filter(item=>!replacementIds.has(item.id));
+  const currentVersion=Number(timeline?.schemaVersion||1);
+  if(currentVersion>=targetVersion)return false;
+  if(currentVersion<2){const replacementIds=new Set(['phase-awareness','phase-interest']);timeline.items=(timeline.items||[]).filter(item=>!replacementIds.has(item.id));}
+  if(currentVersion<3){const replacement=data.timeline?.items?.find(item=>item.id==='zoom-and-october-planning');const index=(timeline.items||[]).findIndex(item=>item.id==='zoom-and-october-planning');if(replacement&&index>=0)timeline.items[index]=structuredClone(replacement);}
   const existingIds=new Set(timeline.items.map(item=>item.id));
   (data.timeline?.items||[]).forEach(item=>{if(!existingIds.has(item.id))timeline.items.push(structuredClone(item));});
   timeline.schemaVersion=targetVersion;
@@ -344,6 +361,17 @@ function formatZoomDate(value){if(!value)return'';const date=new Date(`${value}T
 function zoomSlotLabel(slot){return`${formatZoomDate(slot.date)} ${slot.time}`;}
 function zoomStatusSymbol(status){return status==='yes'?'○':status==='no'?'×':'?';}
 function updateZoomMode(){if($('#zoomMode'))$('#zoomMode').innerHTML=zoomPollUsesCloud?t().zoomShared:t().zoomLocal;}
+function migrateZoomPoll(poll){
+  const targetVersion=Number(data.zoomPoll?.schemaVersion||1),currentVersion=Number(poll?.schemaVersion||1);
+  if(currentVersion>=targetVersion)return false;
+  const retiredIds=new Set((poll.slots||[]).filter(slot=>/^sep(26|27)-/.test(slot.id)).map(slot=>slot.id));
+  poll.slots=(poll.slots||[]).filter(slot=>!retiredIds.has(slot.id));
+  const existingIds=new Set(poll.slots.map(slot=>slot.id));
+  (data.zoomPoll?.slots||[]).forEach(slot=>{if(!existingIds.has(slot.id))poll.slots.push(structuredClone(slot));});
+  (poll.responses||[]).forEach(response=>{response.choices={...(response.choices||{})};retiredIds.forEach(id=>delete response.choices[id]);(data.zoomPoll?.slots||[]).forEach(slot=>{if(!response.choices[slot.id])response.choices[slot.id]='maybe';});});
+  poll.schemaVersion=targetVersion;
+  return true;
+}
 
 async function initZoomPoll(){
   const starter=structuredClone(data.zoomPoll||{id:'main',slots:[],responses:[]});
@@ -361,6 +389,7 @@ async function initZoomPoll(){
   }else activeZoomPoll=loadLocalZoomPoll()||starter;
   if(!Array.isArray(activeZoomPoll.slots))activeZoomPoll.slots=[];
   if(!Array.isArray(activeZoomPoll.responses))activeZoomPoll.responses=[];
+  if(migrateZoomPoll(activeZoomPoll)){if(zoomPollUsesCloud)await saveZoomPoll(activeZoomPoll);else saveLocalZoomPoll(activeZoomPoll);}
   const rememberedName=localStorage.getItem(localZoomNameKey())||'';
   $('#zoomName').value=rememberedName;
   const rememberedResponse=activeZoomPoll.responses.find(item=>item.name.localeCompare(rememberedName,undefined,{sensitivity:'accent'})===0);
@@ -446,5 +475,5 @@ function collectDescendants(id){const output=[];const walk=parent=>activeMap.nod
 function drawLines(){if(!activeMap)return;const svg=$('#mindmapLines'),wrap=$('#mindmapCanvas'),wrapRect=wrap.getBoundingClientRect();svg.innerHTML='';activeMap.nodes.filter(node=>node.parentId).forEach(node=>{const child=$(`.map-node[data-id="${CSS.escape(node.id)}"]`,wrap),parent=$(`.map-node[data-id="${CSS.escape(node.parentId)}"]`,wrap);if(!child||!parent)return;const a=parent.getBoundingClientRect(),b=child.getBoundingClientRect(),x1=a.left-wrapRect.left+a.width/2,y1=a.top-wrapRect.top+a.height/2,x2=b.left-wrapRect.left+b.width/2,y2=b.top-wrapRect.top+b.height/2,dx=Math.max(40,Math.abs(x2-x1)*.45),direction=x2>=x1?1:-1,path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d',`M ${x1} ${y1} C ${x1+dx*direction} ${y1}, ${x2-dx*direction} ${y2}, ${x2} ${y2}`);path.setAttribute('fill','none');path.setAttribute('stroke','#716c63');path.setAttribute('stroke-width','2');path.setAttribute('stroke-dasharray','5 5');svg.appendChild(path);});}
 function makeDraggable(element,node){let start=null;element.addEventListener('pointerdown',event=>{if(event.target.closest('button'))return;start={px:event.clientX,py:event.clientY,x:node.x,y:node.y};element.setPointerCapture(event.pointerId);});element.addEventListener('pointermove',event=>{if(!start)return;node.x=Math.max(0,start.x+event.clientX-start.px);node.y=Math.max(0,start.y+event.clientY-start.py);element.style.left=`${node.x}px`;element.style.top=`${node.y}px`;drawLines();});element.addEventListener('pointerup',()=>{if(start)scheduleMapSave();start=null;});element.addEventListener('pointercancel',()=>{start=null;});}
 
-async function main(){try{data=await loadData();initLanguageToggle();initTabs();initGuide();initPlanGuide();bindMindmapToolbar();bindTimelineControls();bindZoomControls();setLanguage('ja');$('#syncMode').innerHTML=t().checkingMode;await initIdeas();await initTimeline();await initZoomPoll();renderMindmap();window.addEventListener('resize',drawLines);}catch(error){console.error(error);document.body.innerHTML=`<div class="lock-screen"><h1>${t().loadErrorTitle}</h1><p>${html(error.message)}</p><p>${t().loadErrorHelp}</p></div>`;}}
+async function main(){try{data=await loadData();initLanguageToggle();initTabs();initGuide();initPlanGuide();initZoomGuide();bindMindmapToolbar();bindTimelineControls();bindZoomControls();setLanguage('ja');$('#syncMode').innerHTML=t().checkingMode;await initIdeas();await initTimeline();await initZoomPoll();renderMindmap();window.addEventListener('resize',drawLines);}catch(error){console.error(error);document.body.innerHTML=`<div class="lock-screen"><h1>${t().loadErrorTitle}</h1><p>${html(error.message)}</p><p>${t().loadErrorHelp}</p></div>`;}}
 main();

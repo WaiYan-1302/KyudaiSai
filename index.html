@@ -153,8 +153,23 @@
       <section class="view" id="view-zoom">
         <div class="section-head">
           <div><h2 id="zoomHeading">Zoom日程調整</h2></div>
-          <p id="zoomDescription">名前を入力し、各候補日時に ○・×・? で回答してください。</p>
+          <p id="zoomDescription">9月21日〜25日の候補について、名前を入力し ○・×・? で回答してください。</p>
         </div>
+        <section class="idea-guide" id="zoomGuide" aria-labelledby="zoomGuideTitle">
+          <button class="idea-guide-close" id="zoomGuideClose" type="button" aria-label="ガイドを隠す">×</button>
+          <div class="idea-guide-character" aria-hidden="true">
+            <img id="zoomGuideSprite" src="./assets/dialogueAni1/harmoq_cat_01.png" alt="">
+          </div>
+          <div class="idea-guide-dialogue">
+            <div class="idea-guide-kicker" id="zoomGuideTitle">ZOOM GUIDE</div>
+            <p id="zoomGuideText"></p>
+            <div class="idea-guide-controls">
+              <span id="zoomGuideProgress" aria-live="polite"></span>
+              <button class="btn small" id="zoomGuideNext" type="button">次へ →</button>
+            </div>
+          </div>
+        </section>
+        <button class="idea-guide-show" id="zoomGuideShow" type="button" hidden>💡 Zoom日程ガイドを表示</button>
         <div class="zoom-layout">
           <section class="zoom-panel zoom-response-panel">
             <div class="doc-eyebrow">YOUR AVAILABILITY</div>

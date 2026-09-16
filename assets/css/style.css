@@ -323,6 +323,8 @@ a { color: inherit; }
   cursor:pointer;
   font-weight:800;
 }
+.translation-notice { border-left:6px solid var(--accent); background:#fff1ad; }
+.translation-notice p { font-weight:950; }
 
 .idea-layout { display:grid; grid-template-columns: 320px minmax(0,1fr); gap:22px; align-items:start; }
 .idea-form-card {
